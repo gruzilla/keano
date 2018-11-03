@@ -1,0 +1,24 @@
+{
+  "name": "keano",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "delete": "rm -rf metacoin",
+    "clean": "rm -rf metacoin/build",
+    "setup": "mkdir metacoin; cd metacoin; truffle unbox metacoin",
+    "compile": "cd metacoin; truffle compile",
+    "test": "cd metacoin; truffle test",
+    "dev": "cd metacoin; truffle develop",
+    "deploy": "cd metacoin; truffle migrate",
+    "console": "cd metacoin; truffle console",
+    "ropstenConsole": "cd metacoin; truffle console --network ropsten",
+    "ropstenDeploy": "cd metacoin; truffle migrate --network ropsten"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "truffle": "^4.1.14",
+    "truffle-hdwallet-provider": "0.0.6"
+  }
+}
