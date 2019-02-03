@@ -1,6 +1,6 @@
-node_modules
-npm-debug.log
-ganache*.AppImage
-metacoin/build
-metacoin/constants.js
+crypto/node_modules
+crypto/npm-debug.log
+crypto/ganache*.AppImage
+crypto/metacoin/build
+crypto/metacoin/constants.js
 .idea
