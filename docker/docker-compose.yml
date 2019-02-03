@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  webserver:
+    image: nginx:alpine
+    volumes:
+      - ../map/:/usr/share/nginx/html
+    environment:
+      - VIRTUAL_HOST=keano.abendstille.at
+    networks:
+      - revproxy
+
+networks:
+  revproxy:
+    external: true

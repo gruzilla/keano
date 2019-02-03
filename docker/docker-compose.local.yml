@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  webserver:
+    image: nginx:alpine
+    volumes:
+      - ../map/:/usr/share/nginx/html
+    ports:
+      - "8080:8080"
