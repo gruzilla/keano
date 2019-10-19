@@ -7,3 +7,7 @@ crypto/metacoin/constants.js
 map/dist/bundle.js
 map/node_modules
 map/dist/bundle.js.map
+env
+credentials
+credentials.py
+__pycache__
