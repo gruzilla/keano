@@ -9,6 +9,10 @@ services:
       - VIRTUAL_HOST=decarbnow.space
     networks:
       - revproxy
+  streamer:
+    build: ../map/streamer
+    volumes:
+      - ../map/data:/app
 
 networks:
   revproxy:
