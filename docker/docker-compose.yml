@@ -6,7 +6,7 @@ services:
     volumes:
       - ../map/:/usr/share/nginx/html
     environment:
-      - VIRTUAL_HOST=keano.abendstille.at
+      - VIRTUAL_HOST=decarbnow.space
     networks:
       - revproxy
 
