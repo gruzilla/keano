@@ -12,7 +12,7 @@ services:
   streamer:
     build: ../map/streamer
     volumes:
-      - ../map/data:/app
+      - ../map/data:/usr/src/app
 
 networks:
   revproxy:
