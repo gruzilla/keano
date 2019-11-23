@@ -11,3 +11,5 @@ env
 credentials
 credentials.py
 __pycache__
+.maven-repo
+.env
