@@ -10,8 +10,7 @@ services:
       - VIRTUAL_HOST=decarbnow.space
     networks:
       - revproxy
-    links:
-        - collector
+      - decarbnow
 
   collector:
     image: openjdk:8-alpine
@@ -21,8 +20,8 @@ services:
     command: java -Dspring.datasource.url=jdbc:postgresql://database:5432/${POSTGRES_DB_DB} -Dspring.datasource.username=${POSTGRES_DB_USER} -Dspring.datasource.password=${POSTGRES_DB_PASSWORD} -Dtwitter4j.oauth.consumerKey=${consumerKey} -Dtwitter4j.oauth.consumerSecret=${consumerSecret} -Dtwitter4j.oauth.accessToken=${accessToken} -Dtwitter4j.oauth.accessTokenSecret=${accessTokenSecret} -jar collector-0.0.1.jar --debug
     depends_on:
       - database
-    links:
-      - database
+    networks:
+      - decarbnow
 
   database:
     image: mdillon/postgis:9.5
@@ -35,7 +34,10 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - 54332:5432
+    networks:
+        - decarbnow
 
 networks:
   revproxy:
     external: true
+  decarbnow:
