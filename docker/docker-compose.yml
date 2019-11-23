@@ -19,7 +19,7 @@ services:
     volumes:
       - ../collector/target:/app
     working_dir: /app
-    command: java -Dspring.data.rest.basePath=/api -Dspring.datasource.url=jdbc:postgresql://database:5432/${POSTGRES_DB_DB} -Dspring.datasource.username=${POSTGRES_DB_USER} -Dspring.datasource.password=${POSTGRES_DB_PASSWORD} -Dtwitter4j.oauth.consumerKey=${consumerKey} -Dtwitter4j.oauth.consumerSecret=${consumerSecret} -Dtwitter4j.oauth.accessToken=${accessToken} -Dtwitter4j.oauth.accessTokenSecret=${accessTokenSecret} -jar collector-0.0.1.jar --debug
+    command: java -Dserver.use-forward-headers=true -Dspring.data.rest.basePath=/api -Dspring.datasource.url=jdbc:postgresql://database:5432/${POSTGRES_DB_DB} -Dspring.datasource.username=${POSTGRES_DB_USER} -Dspring.datasource.password=${POSTGRES_DB_PASSWORD} -Dtwitter4j.oauth.consumerKey=${consumerKey} -Dtwitter4j.oauth.consumerSecret=${consumerSecret} -Dtwitter4j.oauth.accessToken=${accessToken} -Dtwitter4j.oauth.accessTokenSecret=${accessTokenSecret} -jar collector-0.0.1.jar --debug
     depends_on:
       - database
     networks:
