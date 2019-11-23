@@ -1,12 +1,12 @@
 build:
-	docker run --rm -v $(shell pwd):/app -w /app/map -ti node:10.17-alpine npm run build
+	docker run --rm -v "$(shell pwd)":/app -w /app/map -ti node:10.17-alpine npm run build
 
 update:
 	git pull
 
 update-map:
-	docker run --rm -v $(shell pwd):/app -w /app/map -ti node:10.17-alpine npm install
+	docker run --rm -v "$(shell pwd)":/app -w /app/map -ti node:10.17-alpine npm install
 
-deploy:
-	ssh ma@abendstille.at "cd applications/keano.abendstille.at; git pull"
-	scp map/dist/bundle.js ma@abendstille.at:applications/keano.abendstille.at/map/dist
+update-collector:
+	mkdir -p maven-repo
+	docker run -it --rm --name collector -v maven-repo:/root/.m2 -v "$(shell pwd)/collector":/app -w /app maven:3.3-jdk-8 mvn -DskipTests clean package
