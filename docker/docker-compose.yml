@@ -5,14 +5,36 @@ services:
     image: nginx:alpine
     volumes:
       - ../map/:/usr/share/nginx/html
+      - nginx.conf:/etc/nginx/conf.d/default.conf
     environment:
       - VIRTUAL_HOST=decarbnow.space
     networks:
       - revproxy
-  streamer:
-    build: ../map/streamer
+    links:
+        - collector
+
+  collector:
+    image: openjdk:8-alpine
     volumes:
-      - ../map/data:/usr/src/app/data
+      - ../collector/target:/app
+    working_dir: /app
+    command: java -Dspring.datasource.url=jdbc:postgresql://database:5432/${POSTGRES_DB_DB} -Dspring.datasource.username=${POSTGRES_DB_USER} -Dspring.datasource.password=${POSTGRES_DB_PASSWORD} -Dtwitter4j.oauth.consumerKey=${consumerKey} -Dtwitter4j.oauth.consumerSecret=${consumerSecret} -Dtwitter4j.oauth.accessToken=${accessToken} -Dtwitter4j.oauth.accessTokenSecret=${accessTokenSecret} -jar collector-0.0.1.jar --debug
+    depends_on:
+      - database
+    links:
+      - database
+
+  database:
+    image: mdillon/postgis:9.5
+    volumes:
+      - ../data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_DB_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_DB_USER}
+      - POSTGRES_DB=${POSTGRES_DB_DB}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - 54332:5432
 
 networks:
   revproxy:
