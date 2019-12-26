@@ -1,6 +1,9 @@
 build:
 	docker run --rm -v "$(shell pwd)":/app -w /app/map -ti node:10.17-alpine npm run build
 
+restart:
+	docker-compose restart collector
+
 update:
 	git pull
 
