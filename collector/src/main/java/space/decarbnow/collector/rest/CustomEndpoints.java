@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.decarbnow.collector.beans.TwitterBean;
-import space.decarbnow.collector.entities.MapPoi;
-import space.decarbnow.collector.entities.TwitterStatus;
-
-import java.util.stream.Stream;
+import space.decarbnow.collector.pojos.TwitterStatus;
 
 /**
  * Copyright (c) 2019 Matthias Steinböck - All Rights Reserved
@@ -29,8 +26,7 @@ public class CustomEndpoints {
 
     @GetMapping("/count")
     public long test() {
-        Stream<Iterable<MapPoi>> pois = Stream.of(repository.findAll());
-        return pois.count();
+        return repository.count();
     }
 
 

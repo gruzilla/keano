@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import space.decarbnow.collector.entities.MapPoi;
-import space.decarbnow.collector.entities.TwitterStatus;
+import space.decarbnow.collector.pojos.TwitterStatus;
 import space.decarbnow.collector.rest.PoiRepository;
 import space.decarbnow.collector.util.Converter;
 import twitter4j.*;
@@ -84,7 +84,7 @@ public class TwitterBean implements StatusListener {
     public TwitterStatus getStatus() {
         TwitterStatus ts = new TwitterStatus();
 
-        ts.setLastStatus(lastTime);
+        ts.setLastStatusDateTime(lastTime);
         ts.setStatus(status);
 
         return ts;
