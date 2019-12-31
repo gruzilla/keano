@@ -9,21 +9,13 @@ import leaflet_sidebar from 'leaflet-sidebar';
 //**************************************************************************
 // configuration and declaration
 //**************************************************************************
-var twittermarker;
-
 let decarbnowMap = map('map', {
-    zoomControl: false // manually added
+    zoomControl: false, // manually added
+    tap: true 
 //}).setView([48.2084, 16.373], 5);
 }).setView([47, 16], 5);
 
 let markerInfo = {
-    "climateaction": {
-        "img": "/dist/img/action_glow.png",
-        "icon_img": "/dist/img/action.png",
-        "title": "Climate Action",
-        "question": "Who took action?",
-        "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
-    },
     "pollution":  {
         "img": "/dist/img/pollution_glow.png", 
         "icon_img": "/dist/img/pollution.png",
@@ -31,10 +23,17 @@ let markerInfo = {
         "question": "Who pollutes our planet?",
         "desc": "Some do, some dont. We all want change. See who works against positive change!!"
     },
+    "climateaction": {
+        "img": "/dist/img/action_glow.png",
+        "icon_img": "/dist/img/action.png",
+        "title": "Climate Action",
+        "question": "Who took action?",
+        "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
+    },
     "transition": {
         "img": "/dist/img/transition_glow.png",
         "icon_img": "/dist/img/transition.png",
-        "title": "Transitions",
+        "title": "Transition",
         "question": "Who takes the first step?",
         "desc": "Switching to lower energy consuming machinery is the first step. See who is willing to make the first step."
     }
@@ -55,8 +54,8 @@ let LeafIcon = Icon.extend({
 });
 
 let icons = {
-    "climateaction": new LeafIcon({iconUrl: markerInfo.climateaction.img}),
     "pollution": new LeafIcon({iconUrl: markerInfo.pollution.img}),
+    "climateaction": new LeafIcon({iconUrl: markerInfo.climateaction.img}),
     "transition": new LeafIcon({iconUrl: markerInfo.transition.img})
 };
 
@@ -83,10 +82,11 @@ let sidebar = L.control.sidebar('sidebar', {
 // functions
 //**************************************************************************
 
+
 function initializeMarkers() {
     currentMarkers = {
-        "climateaction": [],
         "pollution": [],
+        "climateaction": [],
         "transition": []
     };
 }
@@ -94,7 +94,9 @@ function initializeMarkers() {
 function createBackgroundMap() {
     return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+ 
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA OMI</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>'
     });
 }
 
@@ -103,7 +105,9 @@ function createBackgroundMapSat() {
     return tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
-        attribution: '© <a href="https://maps.google.com">Google Maps</a>'
+        attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+ 
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA OMI</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>'
     });
 }
 /*
@@ -124,6 +128,8 @@ function pollutionStyle(feature) {
         stroke: true,
         weight: 0.5,
         opacity: 0.7,
+        //weight: 0.8,
+        //opacity: 1,
         color: "#F1EFE8",
         interactive: false,
         //weight: 2,
@@ -169,6 +175,7 @@ function showError() {
         //.on('confirm', deleteItem)
     */
 }
+
 
 /*
 let videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm',
@@ -254,12 +261,30 @@ function refreshMarkers() {
     
 }
 
+L.Control.Layers.TogglerIcon = L.Control.Layers.extend({
+    options: {
+        // Optional base CSS class name for the toggler element
+        togglerClassName: undefined
+    },
+
+    _initLayout: function(){
+        L.Control.Layers.prototype._initLayout.call(this);
+        if (this.options.togglerClassName) {
+            L.DomUtil.addClass(this._layersLink, togglerClassName);
+        }
+    }
+});
+
+L.control.layers.TogglerIcon = function(opts) {
+    return new L.Control.Layers.TogglerIcon(opts);
+};
+
 
 L.Control.Markers = L.Control.extend({
     onAdd: function(map) {
         let markerControls = L.DomUtil.create('div');
         markerControls.style.width = '400px';
-        markerControls.style.height = '45px';
+        markerControls.style.height = '25px';
         markerControls.style.backgroundColor = '#fff';
         markerControls.style.display = 'flex';
         markerControls.style.flexDirection = 'row';
@@ -271,7 +296,7 @@ L.Control.Markers = L.Control.extend({
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
             let markerContainer = L.DomUtil.create('div');
-            markerContainer.innerHTML = '<img src="' + marker.icon_img + '" style="vertical-align:middle" /> ' + marker.title;
+            markerContainer.innerHTML = '<img height="24" src="' + marker.icon_img + '" style="vertical-align:middle" /> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
         });
@@ -287,40 +312,73 @@ L.control.markers = function(opts) {
     return new L.Control.Markers(opts);
 };
 
+function setTweetMessage(variable){
+        var a = document.getElementById(variable);
+        a.value = "new value";
+}   
+
+
+
 //**************************************************************************
 // events
 //**************************************************************************
 decarbnowMap.on('contextmenu',function(e){
 
-    if (typeof twittermarker !== 'undefined') { // check
-        decarbnowMap.removeLayer(twittermarker); // remove
-    }
-    
-    twittermarker = L.marker(e.latlng);
-       
-    decarbnowMap.addLayer(twittermarker);
-
     let hash = encode(e.latlng.lat, e.latlng.lng);
 
-    let text = '<p>Tweet about'+
-    '<dl>'+
-    '<dd><img src="/dist/img/action.png" width="16">climate action</dd>'+
-    '<dd><img src="/dist/img/pollution.png" width="16">pollution</dd>'+
-    '<dd><img src="/dist/img/transition.png" width="16">climate transition</dd>'+
-    '</dl>'+
-    'taking place here using the buttons below:</p>' +
+    let text = '<h3>Tweet about</h3>'+
+    '<select id="icontype">'+
+    '<option value="pollution" data-image="/dist/img/pollution.png">Pollution</option>'+
+    '<option value="climateaction"  data-image="/dist/img/action.png">Climate Action</option>'+
+    '<option value="transition" data-image="/dist/img/transition.png">Transition</option>'+
+    '</select>'+
+    '<form>'+
+    '<textarea id="tweetText" ></textarea>' +
+    '</form>'+
+    '<div id="tweetBtn">'+
+    '<a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>'+
+    '</div>';
 
-    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #climateaction @' + hash + '">#decarbnow #climateaction @' + hash + '</a> #decarbnow #climateaction @' + hash +'<br />'+
-    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #transition @' + hash + '">#decarbnow #transition @' + hash + '</a> #decarbnow #transition @' + hash + '<br />'+
-    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #pollution @' + hash + '">#decarbnow #pollution @' + hash + '</a> #decarbnow #pollution @' + hash;
-    /*
     showGeoLoc
         .setLatLng(e.latlng)
         .setContent(text)
         .openOn(decarbnowMap);
-    */
-    sidebar.show()
-    sidebar.setContent(text)
+    
+    //here comes the uglyness
+    $('#icontype').on('change', function (e) { 
+        let tweettype = document.getElementById("icontype");
+        let strUser = tweettype.options[tweettype.selectedIndex].value;
+
+        // Remove existing iframe
+        $('#tweetBtn iframe').remove();
+        // Generate new markup
+        var tweetBtn = $('<a></a>')
+            .addClass('twitter-share-button')
+            .attr('href', 'http://twitter.com/share')
+            .attr('data-url', 'null')
+            .attr('data-text', '#decarbnow #' + strUser + ' @' + hash + ' ' + $('#tweetText').val());
+        $('#tweetBtn').append(tweetBtn);
+        
+        twttr.widgets.load();
+    });
+
+    $('#tweetText').on('input', function (e) { 
+        let tweettype = document.getElementById("icontype");
+        let strUser = tweettype.options[tweettype.selectedIndex].value;
+        e.preventDefault();
+        
+        // Remove existing iframe
+        $('#tweetBtn iframe').remove();
+        // Generate new markup
+        var tweetBtn = $('<a></a>')
+            .addClass('twitter-share-button')
+            .attr('href', 'http://twitter.com/share')
+            .attr('data-url', 'null')
+            .attr('data-text', '#decarbnow #' + strUser + ' @' + hash + ' ' + $('#tweetText').val());
+        $('#tweetBtn').append(tweetBtn);
+        
+        twttr.widgets.load();
+    });
 
     console.log(e);
     TwitterWidgetsLoader.load(function(err, twttr) {
@@ -350,42 +408,56 @@ initializeMarkers();
 refreshMarkers();
 
 // add GeoJSON layers to the map once all files are loaded
-$.getJSON("/dist/World_rastered.geojson",function(no2){
-    $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
+$.getJSON("/dist/no2layers/World_2008_rastered.geojson",function(no2_1){
+    $.getJSON("/dist/no2layers/World_2018_rastered.geojson",function(no2_2){
 
-        let baseLayers = {
-            "Satellite": createBackgroundMapSat(),
-            "Streets": createBackgroundMap().addTo(decarbnowMap)
-        };
-        let overlays = {
-            "NO<sub>2</sub> pollution (<a href='https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi' target = popup>NASA OMI</a>)": L.geoJson(no2, {style: pollutionStyle}).addTo(decarbnowMap),
-            "Big coal power stations": L.geoJson(coalplants, {
-                style: function(feature) {
-                    //return {color: '#d8d4d4'};
-                    return {color: '#FF0000'};
-                },
-                pointToLayer: function(feature, latlng) {
-                    return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
-                },
-                onEachFeature: function (feature, layer) {
-                    layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
-                                    '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
-                                    '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
-                                    '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
-                                    '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
-                                    '</table>');
-                }
-            }).addTo(decarbnowMap)
-        };
-        
-        decarbnowMap.addLayer(markerClusters);
-        L.control.layers(baseLayers, overlays,{collapsed:false}).addTo(decarbnowMap);
-        decarbnowMap.addControl(sidebar);
+        $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
+            
+            
+            let baseLayers = {
+                "Satellite": createBackgroundMapSat(),
+                "Streets": createBackgroundMap().addTo(decarbnowMap)
+            };
+            let overlays = {
+                "NO<sub>2</sub> 2008": L.geoJson(no2_1, {style: pollutionStyle}),
+                "NO<sub>2</sub> 2018": L.geoJson(no2_2, {style: pollutionStyle}).addTo(decarbnowMap),
+                "No NO<sub>2</sub> layer": L.geoJson(null, {style: pollutionStyle})
+                
+            };
+            let overlays_other = {
+                "Big coal power stations": L.geoJson(coalplants, {
+                    style: function(feature) {
+                        //return {color: '#d8d4d4'};
+                        return {color: '#FF0000'};
+                    },
+                    pointToLayer: function(feature, latlng) {
+                        return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
+                                        '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
+                                        '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
+                                        '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
+                                        '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+                                        '</table>');
+                    }
+                }).addTo(decarbnowMap)
+            }
+            
+            decarbnowMap.addLayer(markerClusters);
+            L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
+            L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
+            L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
 
+            decarbnowMap.addControl(sidebar);
+
+        });
     });
 });
 
 L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
+
+
 
 window.setInterval(refreshMarkers, 30000);
