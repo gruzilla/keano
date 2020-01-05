@@ -91,9 +91,9 @@ public abstract class Converter {
             logger.debug("-> InReplyUrl: " + p.getUrlInReplyTweet());
         }
 
-        // set QuotedUrl by using its permalink, this is different from above, because we do not use the twitter url-schema
+        // set QuotedUrl by combining the quoted users url and the tweets id using the twitter url-schema
         if (status.getQuotedStatusPermalink() != null) {
-            p.setUrlQuotedTweet(status.getQuotedStatusPermalink().getURL());
+            p.setUrlQuotedTweet(status.getQuotedStatus().getUser().getURL() + "/status/" + status.getQuotedStatusId());
             logger.debug("-> QuotedUrl: " + p.getUrlQuotedTweet());
         }
 
