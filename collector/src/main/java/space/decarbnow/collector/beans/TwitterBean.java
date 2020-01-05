@@ -33,7 +33,7 @@ public class TwitterBean implements StatusListener {
     @Autowired
     public TwitterBean(PoiRepository repository) {
 
-        logger.debug("STARTING TWITTER BEAN....");
+        logger.info("STARTING TWITTER BEAN....");
 
         this.repository = repository;
         this.twitter = TwitterFactory.getSingleton();
@@ -44,10 +44,10 @@ public class TwitterBean implements StatusListener {
         this.twitterStream = new TwitterStreamFactory().getInstance();
 
         try {
-            logger.debug("importing tweets that can be retrieved..");
+            logger.info("importing tweets that can be retrieved..");
             runImport();
 
-            logger.debug("initializing stream...");
+            logger.info("initializing stream...");
             initializeTwitterStream();
 
         } catch (TwitterException e) {
@@ -63,7 +63,7 @@ public class TwitterBean implements StatusListener {
             // logger.debug("we found " + res.getCount() + " tweets");
             Stream<MapPoi> pois = res.getTweets().stream().map(Converter::mapPoiFromStatus);
             pois.forEach(this.repository::save);
-            logger.debug("saved all retrievable tweets.");
+            logger.info("saved all retrievable tweets (" + pois.count() + ").");
             status = "import done";
         } while ((query = res.nextQuery()) != null);
     }
@@ -75,7 +75,7 @@ public class TwitterBean implements StatusListener {
         ));
         twitterStream.addListener(this);
 
-        logger.debug("starting listening...");
+        logger.info("starting listening to #decarbnow...");
         twitterStream.filter("#decarbnow");
         lastTime = LocalDateTime.now();
         status = "initialization done";

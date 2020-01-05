@@ -55,7 +55,7 @@ public abstract class Converter {
         validTypes.add("climateaction");
         validTypes.add("pollution");
 
-        logger.debug("TWEET: " + t);
+        logger.info("TWEET: " + t + "\n");
 
         // set Type and Position by taking the first valid type and the first hashtag that converts to a geohash
         for (HashtagEntity hte : status.getHashtagEntities()) {
@@ -67,20 +67,20 @@ public abstract class Converter {
             if (hashTagText.length() > MIN_GEOHASH_LENGTH && p.getPosition() == null) {
                 try {
                     Point position = createPoint(hashTagText);
-                    logger.debug("-> Position: " + position.getX() + " " + position.getY());
+                    logger.info("-> Position: " + position.getX() + " " + position.getY());
                     p.setPosition(position);
                 } catch (InvalidGeoHashException ignored) {
                 }
             }
         }
 
-        // set OriginalUrl by combining the users url and the tweets id using twitters url-schema
-        p.setUrlOriginalTweet(status.getUser().getURL() + "/status/" + status.getId());
-        logger.debug("-> OriginalUrl: " + p.getUrlOriginalTweet());
+        // set OriginalUrl by combining the users ScreenName and the tweets id using twitters url-schema
+        p.setUrlOriginalTweet("https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId());
+        logger.info("-> OriginalUrl: " + p.getUrlOriginalTweet());
 
         // set Text by using the status' full text
         p.setText(status.getText());
-        logger.debug("-> Text: " + p.getText());
+        logger.info("-> Text: " + p.getText());
 
         // convert status' created at
         p.setCreatedAt(LocalDateTime.ofInstant(status.getCreatedAt().toInstant(), ZoneId.systemDefault()));
@@ -88,13 +88,13 @@ public abstract class Converter {
         // set InReplyUrl by combining the ScreenName of the replying user and the status-id using twitters url-schema
         if (status.getInReplyToScreenName() != null) {
             p.setUrlInReplyTweet("https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId());
-            logger.debug("-> InReplyUrl: " + p.getUrlInReplyTweet());
+            logger.info("-> InReplyUrl: " + p.getUrlInReplyTweet());
         }
 
-        // set QuotedUrl by combining the quoted users url and the tweets id using the twitter url-schema
+        // set QuotedUrl by combining the quoted users ScreenName and the tweets id using the twitter url-schema
         if (status.getQuotedStatusPermalink() != null) {
-            p.setUrlQuotedTweet(status.getQuotedStatus().getUser().getURL() + "/status/" + status.getQuotedStatusId());
-            logger.debug("-> QuotedUrl: " + p.getUrlQuotedTweet());
+            p.setUrlQuotedTweet("https://twitter.com/" + status.getQuotedStatus().getUser().getScreenName() + "/status/" + status.getQuotedStatusId());
+            logger.info("-> QuotedUrl: " + p.getUrlQuotedTweet());
         }
 
         return p;

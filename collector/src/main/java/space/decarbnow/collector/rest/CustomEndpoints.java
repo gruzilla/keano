@@ -14,7 +14,7 @@ import space.decarbnow.collector.pojos.TwitterStatus;
  * Created by ma on 11/12/19.
  */
 @CrossOrigin(origins = "*")
-@RestController
+@RestController("/status")
 public class CustomEndpoints {
 
     private final PoiRepository repository;
@@ -31,10 +31,8 @@ public class CustomEndpoints {
         return repository.count();
     }
 
-
-    @GetMapping("/status")
+    @GetMapping("/")
     public TwitterStatus insert() {
         return twitter.getStatus();
     }
-
 }
