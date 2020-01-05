@@ -10,9 +10,13 @@ import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.io.GeohashUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import space.decarbnow.collector.api.InvalidGeoHashException;
 import space.decarbnow.collector.entities.MapPoi;
+import twitter4j.HashtagEntity;
 import twitter4j.Status;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +27,7 @@ import java.util.regex.Pattern;
  * Created by ma on 11/12/19.
  */
 public abstract class Converter {
+    public static final int MIN_GEOHASH_LENGTH = 6;
     private static Logger logger = LoggerFactory.getLogger(MapPoi.class);
     private final static PrecisionModel precisionModel = new PrecisionModel();
     private final static int SRID = 4326;
@@ -33,8 +38,11 @@ public abstract class Converter {
         return new Point(cs, new GeometryFactory(precisionModel, SRID));
     }
 
-    public static Point createPoint(String geohash) {
+    public static Point createPoint(String geohash) throws InvalidGeoHashException {
         org.locationtech.spatial4j.shape.Point position = GeohashUtils.decode(geohash, SpatialContext.GEO).getCenter();
+        if (position == null) {
+            throw new InvalidGeoHashException();
+        };
         return createPoint(position.getX(), position.getY());
     }
 
@@ -42,44 +50,49 @@ public abstract class Converter {
         MapPoi p = new MapPoi();
         String t = status.getText();
 
+        List<String> validTypes = new ArrayList<>();
+        validTypes.add("transition");
+        validTypes.add("climateaction");
+        validTypes.add("pollution");
+
         logger.debug("TWEET: " + t);
 
-        Pattern r = Pattern.compile("#([a-zA-Z]+)\\s+#([a-zA-Z]+)\\s+@([a-zA-Z0-9]+)\\s+(.+)");
-        Matcher m = r.matcher(t);
+        // set Type and Position by taking the first valid type and the first hashtag that converts to a geohash
+        for (HashtagEntity hte : status.getHashtagEntities()) {
+            String hashTagText = hte.getText();
+            if (p.getType() == null && validTypes.contains(hashTagText)) {
+                p.setType(hashTagText);
+            }
 
-        String detectionTag = null;
-        String layerTag = null;
-        String geo = null;
-        String text = null;
-        String origUrl = null;
-
-        if (m.matches()) {
-            logger.debug("-> matches");
-            detectionTag = m.group(1);
-            layerTag = m.group(2);
-            geo = m.group(3);
-            text = m.group(4);
+            if (hashTagText.length() > MIN_GEOHASH_LENGTH && p.getPosition() == null) {
+                try {
+                    Point position = createPoint(hashTagText);
+                    logger.debug("-> Position: " + position.getX() + " " + position.getY());
+                    p.setPosition(position);
+                } catch (InvalidGeoHashException ignored) {
+                }
+            }
         }
 
+        // set OriginalUrl by combining the users url and the tweets id using twitters url-schema
+        p.setUrlOriginalTweet(status.getUser().getURL() + "/status/" + status.getId());
+        logger.debug("-> OriginalUrl: " + p.getUrlOriginalTweet());
+
+        // set Message by using the status' full text
+        p.setMessage(status.getText());
+        logger.debug("-> Text: " + p.getMessage());
+
+        // set InReplyUrl by combining the ScreenName of the replying user and the status-id using twitters url-schema
         if (status.getInReplyToScreenName() != null) {
-            origUrl = "https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId();
+            p.setUrlInReplyTweet("https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId());
+            logger.debug("-> InReplyUrl: " + p.getUrlInReplyTweet());
         }
 
+        // set QuotedUrl by using its permalink, this is different from above, because we do not use the twitter url-schema
         if (status.getQuotedStatusPermalink() != null) {
-            origUrl = status.getQuotedStatusPermalink().getURL();
+            p.setUrlQuotedTweet(status.getQuotedStatusPermalink().getURL());
+            logger.debug("-> QuotedUrl: " + p.getUrlQuotedTweet());
         }
-
-        if (geo != null) {
-            Point position = createPoint(geo);
-            logger.debug("-> Position: " + position.getX() + " " + position.getY());
-            p.setPosition(position);
-        }
-        logger.debug("-> OrigUrl: " + origUrl);
-        logger.debug("-> Text: " + text);
-        logger.debug("-> Tag: " + layerTag);
-        p.setType((layerTag != null) ? layerTag : "unkown");
-        p.setMessage(text);
-        p.setUrlLinkedTweet(origUrl);
 
         return p;
     }

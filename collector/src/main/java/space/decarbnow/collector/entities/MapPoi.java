@@ -40,7 +40,10 @@ public class MapPoi {
     private Point position;
 
     @Column(nullable = true)
-    private String urlLinkedTweet;
+    private String urlQuotedTweet;
+
+    @Column(nullable = true)
+    private String urlInReplyTweet;
 
     @Column(nullable = false)
     private String type;
@@ -48,4 +51,6 @@ public class MapPoi {
     @Column(nullable = true)
     private String message;
 
+    @Column(nullable = true)
+    private String urlOriginalTweet;
 }
