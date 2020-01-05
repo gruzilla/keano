@@ -1,9 +1,10 @@
 package space.decarbnow.collector.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
 import org.locationtech.jts.geom.Point;
 import space.decarbnow.collector.rest.JsonPointDeserializer;
 import space.decarbnow.collector.rest.PointJsonSerializer;
@@ -12,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 /**
  * Copyright (c) 2019 Matthias Steinböck - All Rights Reserved
@@ -21,6 +23,9 @@ import javax.persistence.Id;
  */
 @Entity
 @Data
+@Filters( {
+    @Filter(name="filterHiddenTweets", condition=":hide IS FALSE")
+} )
 public class MapPoi {
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -46,4 +51,11 @@ public class MapPoi {
 
     @Column(nullable = true)
     private String urlOriginalTweet;
+
+    @JsonIgnore
+    @Column(nullable = false, columnDefinition = "boolean not null default false")
+    private boolean hide = false;
+
+    @Column(nullable = true)
+    private LocalDateTime createdAt;
 }

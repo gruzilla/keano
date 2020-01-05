@@ -15,6 +15,8 @@ import space.decarbnow.collector.entities.MapPoi;
 import twitter4j.HashtagEntity;
 import twitter4j.Status;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +81,9 @@ public abstract class Converter {
         // set Text by using the status' full text
         p.setText(status.getText());
         logger.debug("-> Text: " + p.getText());
+
+        // convert status' created at
+        p.setCreatedAt(LocalDateTime.ofInstant(status.getCreatedAt().toInstant(), ZoneId.systemDefault()));
 
         // set InReplyUrl by combining the ScreenName of the replying user and the status-id using twitters url-schema
         if (status.getInReplyToScreenName() != null) {
