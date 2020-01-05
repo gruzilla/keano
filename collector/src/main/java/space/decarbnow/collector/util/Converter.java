@@ -27,7 +27,7 @@ import java.util.List;
  * Created by ma on 11/12/19.
  */
 public abstract class Converter {
-    public static final int MIN_GEOHASH_LENGTH = 6;
+    public static final int MIN_GEOHASH_LENGTH = 9;
     private static Logger logger = LoggerFactory.getLogger(MapPoi.class);
     private final static PrecisionModel precisionModel = new PrecisionModel();
     private final static int SRID = 4326;
@@ -39,6 +39,9 @@ public abstract class Converter {
     }
 
     public static Point createPoint(String geohash) throws InvalidGeoHashException {
+        if (geohash.length() < MIN_GEOHASH_LENGTH || geohash.indexOf('a') >= 0 || geohash.indexOf('i') >= 0 || geohash.indexOf('l') >= 0 || geohash.indexOf('o') >= 0) {
+            throw new InvalidGeoHashException();
+        }
         org.locationtech.spatial4j.shape.Point position = GeohashUtils.decode(geohash, SpatialContext.GEO).getCenter();
         if (position == null) {
             throw new InvalidGeoHashException();
@@ -64,7 +67,7 @@ public abstract class Converter {
                 p.setType(hashTagText);
             }
 
-            if (hashTagText.length() > MIN_GEOHASH_LENGTH && p.getPosition() == null) {
+            if (p.getPosition() == null) {
                 try {
                     Point position = createPoint(hashTagText);
                     logger.info("-> Position from " + hashTagText + ": " + position.getX() + " " + position.getY());
