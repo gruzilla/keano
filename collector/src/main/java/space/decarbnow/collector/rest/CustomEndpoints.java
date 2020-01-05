@@ -3,11 +3,8 @@ package space.decarbnow.collector.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import space.decarbnow.collector.entities.MapPoi;
-
-import java.util.stream.Stream;
-
-import static space.decarbnow.collector.util.Converter.createPoint;
+import space.decarbnow.collector.beans.TwitterBean;
+import space.decarbnow.collector.pojos.TwitterStatus;
 
 /**
  * Copyright (c) 2019 Matthias Steinböck - All Rights Reserved
@@ -19,27 +16,23 @@ import static space.decarbnow.collector.util.Converter.createPoint;
 public class CustomEndpoints {
 
     private final PoiRepository repository;
+    private final TwitterBean twitter;
 
     @Autowired
-    public CustomEndpoints(PoiRepository repository) {
+    public CustomEndpoints(PoiRepository repository, TwitterBean twitter) {
         this.repository = repository;
+        this.twitter = twitter;
     }
 
-    @GetMapping("/test")
-    public String test() {
-        Stream<Iterable<MapPoi>> pois = Stream.of(repository.findAll());
-        return "yey " + pois.count();
+    @GetMapping("/count")
+    public long test() {
+        return repository.count();
     }
 
 
-    @GetMapping("/insert")
-    public String insert() {
-        MapPoi poi = new MapPoi();
-        poi.setMessage("new");
-        poi.setType("pollution");
-        poi.setPosition(createPoint(48.1862, 16.3672));
-        repository.save(poi);
-        return "yey! saved!";
+    @GetMapping("/status")
+    public TwitterStatus insert() {
+        return twitter.getStatus();
     }
 
 }

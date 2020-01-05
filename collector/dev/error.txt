@@ -1,0 +1,214 @@
+2019-12-20 12:39:40.322 ERROR 1 --- [ceiving stream]] s.decarbnow.collector.beans.TwitterBean  : TWITTER STREAM ERROR: Stream closed.
+Relevant discussions can be found on the Internet at:
+    http://www.google.co.jp/search?q=a8fd061d or
+    http://www.google.co.jp/search?q=00089f66
+TwitterException{exceptionCode=[a8fd061d-00089f66 a8fd061d-00089edd], statusCode=-1, message=null, code=-1, retryAfter=-1, rateLimitStatus=null, version=4.0.7}
+
+twitter4j.TwitterException: Stream closed.
+    at twitter4j.StatusStreamBase.handleNextElement(StatusStreamBase.java:212) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+    at twitter4j.StatusStreamImpl.next(StatusStreamImpl.java:56) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+    at twitter4j.TwitterStreamImpl$TwitterStreamConsumer.run(TwitterStreamImpl.java:586) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+Caused by: java.io.IOException: Premature EOF
+    at sun.net.www.http.ChunkedInputStream.readAheadBlocking(ChunkedInputStream.java:565) ~[na:1.8.0_212]
+    at sun.net.www.http.ChunkedInputStream.readAhead(ChunkedInputStream.java:609) ~[na:1.8.0_212]
+    at sun.net.www.http.ChunkedInputStream.read(ChunkedInputStream.java:696) ~[na:1.8.0_212]
+    at java.io.FilterInputStream.read(FilterInputStream.java:133) ~[na:1.8.0_212]
+    at sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3444) ~[na:1.8.0_212]
+    at java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:238) ~[na:1.8.0_212]
+    at java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158) ~[na:1.8.0_212]
+    at java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117) ~[na:1.8.0_212]
+    at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:284) ~[na:1.8.0_212]
+    at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:326) ~[na:1.8.0_212]
+    at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:178) ~[na:1.8.0_212]
+    at java.io.InputStreamReader.read(InputStreamReader.java:184) ~[na:1.8.0_212]
+    at java.io.BufferedReader.fill(BufferedReader.java:161) ~[na:1.8.0_212]
+    at java.io.BufferedReader.readLine(BufferedReader.java:324) ~[na:1.8.0_212]
+    at java.io.BufferedReader.readLine(BufferedReader.java:389) ~[na:1.8.0_212]
+    at twitter4j.StatusStreamBase.handleNextElement(StatusStreamBase.java:75) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+    ... 2 common frames omitted
+
+
+---------------------------------------------------------------------------------------------------
+
+2019-12-20 12:39:40.322 ERROR 1 --- [ceiving stream]] s.decarbnow.collector.beans.TwitterBean  : TWITTER STREAM ERROR: Stream closed.
+Relevant discussions can be found on the Internet at:
+    http://www.google.co.jp/search?q=a8fd061d or
+    http://www.google.co.jp/search?q=00089f66
+TwitterException{exceptionCode=[a8fd061d-00089f66 a8fd061d-00089edd], statusCode=-1, message=null, code=-1, retryAfter=-1, rateLimitStatus=null, version=4.0.7}
+
+twitter4j.TwitterException: Stream closed.
+    at twitter4j.StatusStreamBase.handleNextElement(StatusStreamBase.java:212) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+    at twitter4j.StatusStreamImpl.next(StatusStreamImpl.java:56) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+    at twitter4j.TwitterStreamImpl$TwitterStreamConsumer.run(TwitterStreamImpl.java:586) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+Caused by: java.io.IOException: Premature EOF
+    at sun.net.www.http.ChunkedInputStream.readAheadBlocking(ChunkedInputStream.java:565) ~[na:1.8.0_212]
+    at sun.net.www.http.ChunkedInputStream.readAhead(ChunkedInputStream.java:609) ~[na:1.8.0_212]
+    at sun.net.www.http.ChunkedInputStream.read(ChunkedInputStream.java:696) ~[na:1.8.0_212]
+    at java.io.FilterInputStream.read(FilterInputStream.java:133) ~[na:1.8.0_212]
+    at sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3444) ~[na:1.8.0_212]
+    at java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:238) ~[na:1.8.0_212]
+    at java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158) ~[na:1.8.0_212]
+    at java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117) ~[na:1.8.0_212]
+    at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:284) ~[na:1.8.0_212]
+    at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:326) ~[na:1.8.0_212]
+    at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:178) ~[na:1.8.0_212]
+    at java.io.InputStreamReader.read(InputStreamReader.java:184) ~[na:1.8.0_212]
+    at java.io.BufferedReader.fill(BufferedReader.java:161) ~[na:1.8.0_212]
+    at java.io.BufferedReader.readLine(BufferedReader.java:324) ~[na:1.8.0_212]
+    at java.io.BufferedReader.readLine(BufferedReader.java:389) ~[na:1.8.0_212]
+    at twitter4j.StatusStreamBase.handleNextElement(StatusStreamBase.java:75) ~[twitter4j-stream-4.0.7.jar!/:4.0.7]
+    ... 2 common frames omitted
+
+
+---------------------------------------------------------------------------------------------------
+
+
+2019-12-20 14:13:23.546 ERROR 1 --- [nio-8080-exec-9] o.s.d.r.w.RepositoryRestExceptionHandler : Failed to convert from type [java.lang.String] to type [java.lang.Long] for value '4028f0836e999894016f209533090002'; nested exception is java.lang.NumberFormatException: For input string: "4028f0836e999894016f209533090002"
+
+org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [java.lang.Long] for value '4028f0836e999894016f209533090002'; nested exception is java.lang.NumberFormatException: For input string: "4028f0836e999894016f209533090002"
+    at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:191) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:174) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.data.repository.support.ReflectionRepositoryInvoker.convertId(ReflectionRepositoryInvoker.java:289) ~[spring-data-commons-2.2.1.RELEASE.jar!/:2.2.1.RELEASE]
+    at org.springframework.data.repository.support.CrudRepositoryInvoker.invokeFindById(CrudRepositoryInvoker.java:92) ~[spring-data-commons-2.2.1.RELEASE.jar!/:2.2.1.RELEASE]
+    at org.springframework.data.rest.core.support.UnwrappingRepositoryInvokerFactory$UnwrappingRepositoryInvoker.invokeFindById(UnwrappingRepositoryInvokerFactory.java:94) ~[spring-data-rest-core-3.2.1.RELEASE.jar!/:3.2.1.RELEASE]
+    at org.springframework.data.rest.webmvc.RepositoryEntityController.getItemResource(RepositoryEntityController.java:518) ~[spring-data-rest-webmvc-3.2.1.RELEASE.jar!/:3.2.1.RELEASE]
+    at org.springframework.data.rest.webmvc.RepositoryEntityController.getItemResource(RepositoryEntityController.java:331) ~[spring-data-rest-webmvc-3.2.1.RELEASE.jar!/:3.2.1.RELEASE]
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_212]
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_212]
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_212]
+    at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_212]
+    at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:106) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:888) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:793) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) [spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) [spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) [spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) [tomcat-embed-websocket-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:526) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:747) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:861) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1579) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [na:1.8.0_212]
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [na:1.8.0_212]
+    at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at java.lang.Thread.run(Thread.java:748) [na:1.8.0_212]
+Caused by: java.lang.NumberFormatException: For input string: "4028f0836e999894016f209533090002"
+    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:1.8.0_212]
+    at java.lang.Long.parseLong(Long.java:589) ~[na:1.8.0_212]
+    at java.lang.Long.valueOf(Long.java:803) ~[na:1.8.0_212]
+    at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:214) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.StringToNumberConverterFactory$StringToNumber.convert(StringToNumberConverterFactory.java:62) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.StringToNumberConverterFactory$StringToNumber.convert(StringToNumberConverterFactory.java:49) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.GenericConversionService$ConverterFactoryAdapter.convert(GenericConversionService.java:436) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    ... 58 common frames omitted
+
+
+---------------------------------------------------------------------------------------------------
+
+
+2019-12-20 14:14:13.679 ERROR 1 --- [nio-8080-exec-6] o.s.d.r.w.RepositoryRestExceptionHandler : Failed to convert from type [java.lang.String] to type [java.lang.Long] for value '674846fc-72f1-44a5-947b-dfa378d96fda'; nested exception is java.lang.NumberFormatException: For input string: "674846fc-72f1-44a5-947b-dfa378d96fda"
+
+org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [java.lang.Long] for value '674846fc-72f1-44a5-947b-dfa378d96fda'; nested exception is java.lang.NumberFormatException: For input string: "674846fc-72f1-44a5-947b-dfa378d96fda"
+    at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:191) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:174) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.data.repository.support.ReflectionRepositoryInvoker.convertId(ReflectionRepositoryInvoker.java:289) ~[spring-data-commons-2.2.1.RELEASE.jar!/:2.2.1.RELEASE]
+    at org.springframework.data.repository.support.CrudRepositoryInvoker.invokeFindById(CrudRepositoryInvoker.java:92) ~[spring-data-commons-2.2.1.RELEASE.jar!/:2.2.1.RELEASE]
+    at org.springframework.data.rest.core.support.UnwrappingRepositoryInvokerFactory$UnwrappingRepositoryInvoker.invokeFindById(UnwrappingRepositoryInvokerFactory.java:94) ~[spring-data-rest-core-3.2.1.RELEASE.jar!/:3.2.1.RELEASE]
+    at org.springframework.data.rest.webmvc.RepositoryEntityController.getItemResource(RepositoryEntityController.java:518) ~[spring-data-rest-webmvc-3.2.1.RELEASE.jar!/:3.2.1.RELEASE]
+    at org.springframework.data.rest.webmvc.RepositoryEntityController.getItemResource(RepositoryEntityController.java:331) ~[spring-data-rest-webmvc-3.2.1.RELEASE.jar!/:3.2.1.RELEASE]
+    at sun.reflect.GeneratedMethodAccessor111.invoke(Unknown Source) ~[na:na]
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_212]
+    at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_212]
+    at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:106) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:888) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:793) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) [tomcat-embed-websocket-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) [spring-web-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:526) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:747) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:861) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1579) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [na:1.8.0_212]
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [na:1.8.0_212]
+    at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-9.0.27.jar!/:9.0.27]
+    at java.lang.Thread.run(Thread.java:748) [na:1.8.0_212]
+Caused by: java.lang.NumberFormatException: For input string: "674846fc-72f1-44a5-947b-dfa378d96fda"
+    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:1.8.0_212]
+    at java.lang.Long.parseLong(Long.java:589) ~[na:1.8.0_212]
+    at java.lang.Long.valueOf(Long.java:803) ~[na:1.8.0_212]
+    at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:214) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.StringToNumberConverterFactory$StringToNumber.convert(StringToNumberConverterFactory.java:62) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.StringToNumberConverterFactory$StringToNumber.convert(StringToNumberConverterFactory.java:49) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.GenericConversionService$ConverterFactoryAdapter.convert(GenericConversionService.java:436) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41) ~[spring-core-5.2.1.RELEASE.jar!/:5.2.1.RELEASE]
+    ... 57 common frames omitted
+

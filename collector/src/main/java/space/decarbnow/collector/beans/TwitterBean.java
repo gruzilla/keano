@@ -5,11 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import space.decarbnow.collector.entities.MapPoi;
+import space.decarbnow.collector.pojos.TwitterStatus;
 import space.decarbnow.collector.rest.PoiRepository;
 import space.decarbnow.collector.util.Converter;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 /**
@@ -23,69 +25,102 @@ public class TwitterBean implements StatusListener {
 
     private static final Logger logger = LoggerFactory.getLogger(TwitterBean.class);
     private final PoiRepository repository;
+    private final TwitterStream twitterStream;
+    private final Twitter twitter;
+    private LocalDateTime lastTime;
+    private String status;
 
     @Autowired
     public TwitterBean(PoiRepository repository) {
-        this.repository = repository;
+
         logger.debug("STARTING TWITTER BEAN....");
 
+        this.repository = repository;
+        this.twitter = TwitterFactory.getSingleton();
+        twitter.setOAuthAccessToken(new AccessToken(
+                System.getProperty("twitter4j.oauth.accessToken"),
+                System.getProperty("twitter4j.oauth.accessTokenSecret")
+        ));
+        this.twitterStream = new TwitterStreamFactory().getInstance();
 
         try {
-            Twitter twitter = TwitterFactory.getSingleton();
-            twitter.setOAuthAccessToken(new AccessToken(
-                System.getProperty("twitter4j.oauth.accessToken"),
-                System.getProperty("twitter4j.oauth.accessTokenSecret")
-            ));
-
             logger.debug("importing tweets that can be retrieved..");
-            Query query = new Query("#decarbnow");
-            QueryResult res;
-            do {
-                res = twitter.search(query);
-                // logger.debug("we found " + res.getCount() + " tweets");
-                Stream<MapPoi> pois = res.getTweets().stream().map(Converter::mapPoiFromStatus);
-                pois.forEach(this.repository::save);
-                logger.debug("saved all retrievable tweets.");
-            } while ((query = res.nextQuery()) != null);
+            runImport();
 
-            logger.debug("creating listening...");
-
-            TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-            twitterStream.setOAuthAccessToken(new AccessToken(
-                System.getProperty("twitter4j.oauth.accessToken"),
-                System.getProperty("twitter4j.oauth.accessTokenSecret")
-            ));
-            twitterStream.addListener(this);
-
-
-            logger.debug("starting listening...");
-            twitterStream.filter("#decarbnow");
+            logger.debug("initializing stream...");
+            initializeTwitterStream();
 
         } catch (TwitterException e) {
             e.printStackTrace();
         }
     }
 
+    private void runImport() throws TwitterException {
+        Query query = new Query("#decarbnow");
+        QueryResult res;
+        do {
+            res = twitter.search(query);
+            // logger.debug("we found " + res.getCount() + " tweets");
+            Stream<MapPoi> pois = res.getTweets().stream().map(Converter::mapPoiFromStatus);
+            pois.forEach(this.repository::save);
+            logger.debug("saved all retrievable tweets.");
+            status = "import done";
+        } while ((query = res.nextQuery()) != null);
+    }
+
+    private void initializeTwitterStream() {
+        twitterStream.setOAuthAccessToken(new AccessToken(
+            System.getProperty("twitter4j.oauth.accessToken"),
+            System.getProperty("twitter4j.oauth.accessTokenSecret")
+        ));
+        twitterStream.addListener(this);
+
+        logger.debug("starting listening...");
+        twitterStream.filter("#decarbnow");
+        lastTime = LocalDateTime.now();
+        status = "initialization done";
+    }
+
+    public TwitterStatus getStatus() {
+        TwitterStatus ts = new TwitterStatus();
+
+        ts.setLastStatusDateTime(lastTime);
+        ts.setStatus(status);
+
+        return ts;
+    }
+
     @Override
     public void onException(Exception e) {
         logger.error("TWITTER STREAM ERROR: " + e, e);
+        lastTime = LocalDateTime.now();
+        status = "EXCEPTION: " + e;
     }
 
     @Override
     public void onStatus(Status status) {
+        this.lastTime = LocalDateTime.now();
+        this.status = "new status received";
         logger.debug("TWITTER STREAM: NEW TWEET");
-        repository.save(Converter.mapPoiFromStatus(status));
+        MapPoi lastPoi = Converter.mapPoiFromStatus(status);
+        repository.save(lastPoi);
         logger.debug("TWITTER STREAM: DONE.");
+        this.lastTime = LocalDateTime.now();
+        this.status = "new status saved " + status.getId() + " - " + status.getText();
     }
 
     @Override
     public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
         logger.debug("TWITTER STREAM WARNING: Deletion Notice: " + statusDeletionNotice);
+        lastTime = LocalDateTime.now();
+        status = "Deletion Notice";
     }
 
     @Override
     public void onTrackLimitationNotice(int i) {
         logger.debug("TWITTER STREAM WARNING: Track Limitation Notice: " + i);
+        lastTime = LocalDateTime.now();
+        status = "Limitation Notice: " + i;
     }
 
     @Override
@@ -95,6 +130,8 @@ public class TwitterBean implements StatusListener {
 
     @Override
     public void onStallWarning(StallWarning stallWarning) {
+        lastTime = LocalDateTime.now();
+        status = "Stall Warning!";
         logger.debug("TWITTER STREAM WARNING: Stalling: " + stallWarning);
     }
 }
