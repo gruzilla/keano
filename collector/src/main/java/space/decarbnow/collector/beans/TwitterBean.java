@@ -50,14 +50,15 @@ public class TwitterBean implements StatusListener {
             return;
         }
 
+        /*
         try {
             logger.info("importing tweets that can be retrieved..");
             runImport();
-
         } catch (Exception e) {
             logger.error("ERROR: could not import existing tweets!");
             e.printStackTrace();
         }
+        */
 
         try {
             logger.info("initializing stream...");

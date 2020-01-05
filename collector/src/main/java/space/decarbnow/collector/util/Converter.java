@@ -67,7 +67,7 @@ public abstract class Converter {
             if (hashTagText.length() > MIN_GEOHASH_LENGTH && p.getPosition() == null) {
                 try {
                     Point position = createPoint(hashTagText);
-                    logger.info("-> Position: " + position.getX() + " " + position.getY());
+                    logger.info("-> Position from " + hashTagText + ": " + position.getX() + " " + position.getY());
                     p.setPosition(position);
                 } catch (InvalidGeoHashException ignored) {
                 }
