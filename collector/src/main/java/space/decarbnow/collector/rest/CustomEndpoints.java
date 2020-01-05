@@ -3,6 +3,7 @@ package space.decarbnow.collector.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import space.decarbnow.collector.beans.TwitterBean;
 import space.decarbnow.collector.pojos.TwitterStatus;
@@ -14,7 +15,8 @@ import space.decarbnow.collector.pojos.TwitterStatus;
  * Created by ma on 11/12/19.
  */
 @CrossOrigin(origins = "*")
-@RestController("/status")
+@RestController()
+@RequestMapping("status")
 public class CustomEndpoints {
 
     private final PoiRepository repository;
