@@ -16,7 +16,7 @@ import space.decarbnow.collector.pojos.TwitterStatus;
  */
 @CrossOrigin(origins = "*")
 @RestController()
-@RequestMapping("status")
+@RequestMapping("**status")
 public class CustomEndpoints {
 
     private final PoiRepository repository;

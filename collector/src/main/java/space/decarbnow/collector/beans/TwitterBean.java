@@ -49,6 +49,11 @@ public class TwitterBean implements StatusListener {
             e.printStackTrace();
             return;
         }
+        twitter.onRateLimitReached(rateLimitStatusEvent -> {
+            if (rateLimitStatusEvent.isAccountRateLimitStatus()) {
+                status = "Rate Limit Exeeded " + rateLimitStatusEvent.getRateLimitStatus().getLimit() + "/" + rateLimitStatusEvent.getRateLimitStatus().getRemaining()
+            }
+        });
 
         /*
         try {
