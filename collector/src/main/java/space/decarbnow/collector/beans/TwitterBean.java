@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  * Created by ma on 11/12/19.
  */
 @Component
-public class TwitterBean implements StatusListener {
+public class TwitterBean implements StatusListener, ConnectionLifeCycleListener {
 
     private static final Logger logger = LoggerFactory.getLogger(TwitterBean.class);
     private final PoiRepository repository;
@@ -36,24 +36,19 @@ public class TwitterBean implements StatusListener {
         logger.info("STARTING TWITTER BEAN....");
 
         this.repository = repository;
-        this.twitter = TwitterFactory.getSingleton();
+        twitter = TwitterFactory.getSingleton();
         twitter.setOAuthAccessToken(new AccessToken(
                 System.getProperty("twitter4j.oauth.accessToken"),
                 System.getProperty("twitter4j.oauth.accessTokenSecret")
         ));
 
         try {
-            this.twitterStream = new TwitterStreamFactory().getInstance();
+            twitterStream = new TwitterStreamFactory().getInstance();
         } catch (Exception e) {
             logger.error("ERROR: could not create twitter stream!");
             e.printStackTrace();
             return;
         }
-        twitter.onRateLimitReached(rateLimitStatusEvent -> {
-            if (rateLimitStatusEvent.isAccountRateLimitStatus()) {
-                status = "Rate Limit Exeeded " + rateLimitStatusEvent.getRateLimitStatus().getLimit() + "/" + rateLimitStatusEvent.getRateLimitStatus().getRemaining();
-            }
-        });
 
         /*
         try {
@@ -96,6 +91,7 @@ public class TwitterBean implements StatusListener {
         ));
         */
         twitterStream.addListener(this);
+        twitterStream.addConnectionLifeCycleListener(this);
 
         logger.info("starting listening to #decarbnow...");
         twitterStream.filter("#decarbnow");
@@ -155,5 +151,23 @@ public class TwitterBean implements StatusListener {
         lastTime = LocalDateTime.now();
         status = "Stall Warning!";
         logger.debug("TWITTER STREAM WARNING: Stalling: " + stallWarning);
+    }
+
+    @Override
+    public void onConnect() {
+        lastTime = LocalDateTime.now();
+        status = "Stream Connected and waiting for Tweets";
+        logger.debug("TWITTER STREAM CONNECTED.");
+    }
+
+    @Override
+    public void onDisconnect() {
+        lastTime = LocalDateTime.now();
+        status = "Stream Disconnected";
+        logger.debug("TWITTER STREAM DISCONNECTED.");
+    }
+
+    @Override
+    public void onCleanUp() {
     }
 }
