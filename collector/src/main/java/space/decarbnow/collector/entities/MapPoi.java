@@ -42,7 +42,7 @@ public class MapPoi {
     private String type;
 
     @Column(nullable = true)
-    private String message;
+    private String text;
 
     @Column(nullable = true)
     private String urlOriginalTweet;

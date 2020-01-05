@@ -17,8 +17,6 @@ import twitter4j.Status;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Copyright (c) 2019 Matthias Steinböck - All Rights Reserved
@@ -78,9 +76,9 @@ public abstract class Converter {
         p.setUrlOriginalTweet(status.getUser().getURL() + "/status/" + status.getId());
         logger.debug("-> OriginalUrl: " + p.getUrlOriginalTweet());
 
-        // set Message by using the status' full text
-        p.setMessage(status.getText());
-        logger.debug("-> Text: " + p.getMessage());
+        // set Text by using the status' full text
+        p.setText(status.getText());
+        logger.debug("-> Text: " + p.getText());
 
         // set InReplyUrl by combining the ScreenName of the replying user and the status-id using twitters url-schema
         if (status.getInReplyToScreenName() != null) {
