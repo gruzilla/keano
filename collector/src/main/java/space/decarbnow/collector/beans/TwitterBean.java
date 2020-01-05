@@ -45,7 +45,7 @@ public class TwitterBean implements StatusListener {
         try {
             this.twitterStream = new TwitterStreamFactory().getInstance();
         } catch (Exception e) {
-            logger.error("ERROR: could not start twitter bean!");
+            logger.error("ERROR: could not create twitter stream!");
             e.printStackTrace();
             return;
         }
@@ -54,11 +54,17 @@ public class TwitterBean implements StatusListener {
             logger.info("importing tweets that can be retrieved..");
             runImport();
 
+        } catch (Exception e) {
+            logger.error("ERROR: could not import existing tweets!");
+            e.printStackTrace();
+        }
+
+        try {
             logger.info("initializing stream...");
             initializeTwitterStream();
 
-        } catch (TwitterException e) {
-            logger.error("ERROR: could not start twitter bean!");
+        } catch (Exception e) {
+            logger.error("ERROR: could not initialize listener!");
             e.printStackTrace();
         }
     }
@@ -77,10 +83,12 @@ public class TwitterBean implements StatusListener {
     }
 
     private void initializeTwitterStream() {
+        /*
         twitterStream.setOAuthAccessToken(new AccessToken(
             System.getProperty("twitter4j.oauth.accessToken"),
             System.getProperty("twitter4j.oauth.accessTokenSecret")
         ));
+        */
         twitterStream.addListener(this);
 
         logger.info("starting listening to #decarbnow...");
