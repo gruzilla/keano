@@ -25,7 +25,7 @@ public class TwitterBean implements StatusListener {
 
     private static final Logger logger = LoggerFactory.getLogger(TwitterBean.class);
     private final PoiRepository repository;
-    private final TwitterStream twitterStream;
+    private TwitterStream twitterStream;
     private final Twitter twitter;
     private LocalDateTime lastTime;
     private String status;
@@ -41,7 +41,14 @@ public class TwitterBean implements StatusListener {
                 System.getProperty("twitter4j.oauth.accessToken"),
                 System.getProperty("twitter4j.oauth.accessTokenSecret")
         ));
-        this.twitterStream = new TwitterStreamFactory().getInstance();
+
+        try {
+            this.twitterStream = new TwitterStreamFactory().getInstance();
+        } catch (Exception e) {
+            logger.error("ERROR: could not start twitter bean!");
+            e.printStackTrace();
+            return;
+        }
 
         try {
             logger.info("importing tweets that can be retrieved..");
@@ -51,6 +58,7 @@ public class TwitterBean implements StatusListener {
             initializeTwitterStream();
 
         } catch (TwitterException e) {
+            logger.error("ERROR: could not start twitter bean!");
             e.printStackTrace();
         }
     }
