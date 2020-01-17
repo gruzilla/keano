@@ -21,4 +21,7 @@ public interface PoiRepository extends PagingAndSortingRepository<MapPoi, Long> 
 
     @Query("select c from MapPoi c where within(c.position, ?1) = true")
     List<MapPoi> findWithin(Geometry filter);
+
+    @Query("select c from MapPoi c where tweetId = ?1")
+    MapPoi findByTweetId(Long tweetId);
 }

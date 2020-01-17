@@ -1,12 +1,10 @@
 package space.decarbnow.collector.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.decarbnow.collector.beans.TwitterBean;
-import space.decarbnow.collector.pojos.TwitterStatus;
+import space.decarbnow.collector.api.TwitterStatus;
+import space.decarbnow.collector.entities.MapPoi;
 
 /**
  * Copyright (c) 2019 Matthias Steinböck - All Rights Reserved
@@ -27,6 +25,21 @@ public class CustomEndpoints {
         this.repository = repository;
         this.twitter = twitter;
     }
+
+    @GetMapping("/render/{tweetId}")
+    public String renderSideBarElement(@PathVariable Long tweetId) {
+        MapPoi status = repository.findByTweetId(tweetId);
+        if (status == null) {
+            return "";
+        }
+
+        String text = "<div id=\"tweet-" + status.getTweetId() + "\"></div>";
+        if (status.isReplyFromSameUser() && status.getInReplyToTweetId() != null) {
+            text += "<a class=\"nextTweet\" href=\"/api/rendered/" + status.getNextTweetId() + "></a>";
+        }
+        return text;
+    }
+
 
     @GetMapping("/count")
     public long test() {

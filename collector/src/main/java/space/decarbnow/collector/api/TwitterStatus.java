@@ -1,4 +1,4 @@
-package space.decarbnow.collector.pojos;
+package space.decarbnow.collector.api;
 
 import lombok.Data;
 

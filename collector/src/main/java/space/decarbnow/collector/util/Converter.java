@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import space.decarbnow.collector.api.InvalidGeoHashException;
 import space.decarbnow.collector.entities.MapPoi;
+import space.decarbnow.collector.rest.PoiRepository;
 import twitter4j.HashtagEntity;
 import twitter4j.Status;
 
@@ -49,7 +50,7 @@ public abstract class Converter {
         return createPoint(position.getX(), position.getY());
     }
 
-    public static MapPoi mapPoiFromStatus(Status status) {
+    public static MapPoi mapPoiFromStatus(Status status, PoiRepository repository) {
         MapPoi p = new MapPoi();
         String t = status.getText();
         p.setTweetId(status.getId());
@@ -91,8 +92,15 @@ public abstract class Converter {
 
         // set InReplyUrl by combining the ScreenName of the replying user and the status-id using twitters url-schema
         if (status.getInReplyToScreenName() != null) {
-            origUrl = "https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId();
             p.setInReplyToTweetId(status.getInReplyToStatusId());
+            p.setReplyFromSameUser(status.getInReplyToScreenName().equalsIgnoreCase(status.getUser().getScreenName()));
+
+            MapPoi nextStatus = repository.findByTweetId(p.getInReplyToTweetId());
+            if (nextStatus != null) {
+                nextStatus.setNextTweetId(p.getTweetId());
+                repository.save(nextStatus);
+            }
+
             p.setUrlInReplyTweet("https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId());
             logger.info("-> InReplyUrl: " + p.getUrlInReplyTweet());
         }
