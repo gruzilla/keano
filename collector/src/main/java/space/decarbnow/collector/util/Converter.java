@@ -52,6 +52,7 @@ public abstract class Converter {
     public static MapPoi mapPoiFromStatus(Status status) {
         MapPoi p = new MapPoi();
         String t = status.getText();
+        p.setTweetId(status.getId());
 
         List<String> validTypes = new ArrayList<>();
         validTypes.add("transition");
@@ -90,6 +91,8 @@ public abstract class Converter {
 
         // set InReplyUrl by combining the ScreenName of the replying user and the status-id using twitters url-schema
         if (status.getInReplyToScreenName() != null) {
+            origUrl = "https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId();
+            p.setInReplyToTweetId(status.getInReplyToStatusId());
             p.setUrlInReplyTweet("https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId());
             logger.info("-> InReplyUrl: " + p.getUrlInReplyTweet());
         }

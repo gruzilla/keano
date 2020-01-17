@@ -58,4 +58,9 @@ public class MapPoi {
 
     @Column(nullable = true)
     private LocalDateTime createdAt;
+    @Column(nullable = true)
+    private Long tweetId;
+
+    @Column(nullable = true)
+    private Long inReplyToTweetId;
 }
