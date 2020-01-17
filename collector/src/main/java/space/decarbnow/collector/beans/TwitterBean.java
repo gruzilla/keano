@@ -12,7 +12,6 @@ import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
 import java.time.LocalDateTime;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -79,19 +78,23 @@ public class TwitterBean implements StatusListener, ConnectionLifeCycleListener 
             // logger.debug("we found " + res.getCount() + " tweets");
             Stream<MapPoi> pois = res.getTweets().stream().map(Converter::mapPoiFromStatus);
             pois.forEach(mapPoi -> {
-                if (mapPoi.getInReplyToTweetId() != null) {
-                    MapPoi previousTweet = repository.findByTweetId(mapPoi.getInReplyToTweetId());
-                    if (previousTweet != null) {
-                        previousTweet.setNextTweetId(mapPoi.getTweetId());
-                        repository.save(previousTweet);
-                    }
-                }
+                linkPreviousTweet(mapPoi);
                 repository.save(mapPoi);
 
             }); // this.repository::save);
             logger.info("saved all retrievable tweets (" + pois.count() + ").");
             status = "import done";
         } while ((query = res.nextQuery()) != null);
+    }
+
+    private void linkPreviousTweet(MapPoi mapPoi) {
+        if (mapPoi.getInReplyToTweetId() != null) {
+            MapPoi previousTweet = repository.findByTweetId(mapPoi.getInReplyToTweetId());
+            if (previousTweet != null) {
+                previousTweet.setNextTweetId(mapPoi.getTweetId());
+                repository.save(previousTweet);
+            }
+        }
     }
 
     private void initializeTwitterStream() {
@@ -131,8 +134,9 @@ public class TwitterBean implements StatusListener, ConnectionLifeCycleListener 
         this.lastTime = LocalDateTime.now();
         this.status = "new status received";
         logger.debug("TWITTER STREAM: NEW TWEET");
-        MapPoi lastPoi = Converter.mapPoiFromStatus(status);
-        repository.save(lastPoi);
+        MapPoi newPoi = Converter.mapPoiFromStatus(status);
+        linkPreviousTweet(newPoi);
+        repository.save(newPoi);
         logger.debug("TWITTER STREAM: DONE.");
         this.lastTime = LocalDateTime.now();
         this.status = "new status saved " + status.getId() + " - " + status.getText();

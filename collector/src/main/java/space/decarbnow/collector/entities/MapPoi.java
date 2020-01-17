@@ -68,6 +68,6 @@ public class MapPoi {
     @Column(nullable = true)
     private Long nextTweetId;
 
-    @Column(nullable = true)
+    @Column(nullable = false, columnDefinition = "boolean not null default false")
     private boolean replyFromSameUser = false;
 }
