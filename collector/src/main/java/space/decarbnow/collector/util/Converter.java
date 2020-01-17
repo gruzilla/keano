@@ -50,7 +50,7 @@ public abstract class Converter {
         return createPoint(position.getX(), position.getY());
     }
 
-    public static MapPoi mapPoiFromStatus(Status status, PoiRepository repository) {
+    public static MapPoi mapPoiFromStatus(Status status) {
         MapPoi p = new MapPoi();
         String t = status.getText();
         p.setTweetId(status.getId());
@@ -94,13 +94,6 @@ public abstract class Converter {
         if (status.getInReplyToScreenName() != null) {
             p.setInReplyToTweetId(status.getInReplyToStatusId());
             p.setReplyFromSameUser(status.getInReplyToScreenName().equalsIgnoreCase(status.getUser().getScreenName()));
-
-            MapPoi nextStatus = repository.findByTweetId(p.getInReplyToTweetId());
-            if (nextStatus != null) {
-                nextStatus.setNextTweetId(p.getTweetId());
-                repository.save(nextStatus);
-            }
-
             p.setUrlInReplyTweet("https://twitter.com/" + status.getInReplyToScreenName() + "/status/" + status.getInReplyToStatusId());
             logger.info("-> InReplyUrl: " + p.getUrlInReplyTweet());
         }

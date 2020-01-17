@@ -12,6 +12,7 @@ import twitter4j.*;
 import twitter4j.auth.AccessToken;
 
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -77,7 +78,17 @@ public class TwitterBean implements StatusListener, ConnectionLifeCycleListener 
             res = twitter.search(query);
             // logger.debug("we found " + res.getCount() + " tweets");
             Stream<MapPoi> pois = res.getTweets().stream().map(Converter::mapPoiFromStatus);
-            pois.forEach(this.repository::save);
+            pois.forEach(mapPoi -> {
+                if (mapPoi.getInReplyToTweetId() != null) {
+                    MapPoi previousTweet = repository.findByTweetId(mapPoi.getInReplyToTweetId());
+                    if (previousTweet != null) {
+                        previousTweet.setNextTweetId(mapPoi.getTweetId());
+                        repository.save(previousTweet);
+                    }
+                }
+                repository.save(mapPoi);
+
+            }); // this.repository::save);
             logger.info("saved all retrievable tweets (" + pois.count() + ").");
             status = "import done";
         } while ((query = res.nextQuery()) != null);
