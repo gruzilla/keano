@@ -14,7 +14,7 @@ import space.decarbnow.collector.entities.MapPoi;
  */
 @CrossOrigin(origins = "*")
 @RestController()
-@RequestMapping("api/status")
+@RequestMapping("api")
 public class CustomEndpoints {
 
     private final PoiRepository repository;
@@ -46,7 +46,7 @@ public class CustomEndpoints {
         return repository.count();
     }
 
-    @GetMapping("/")
+    @GetMapping("/status")
     public TwitterStatus insert() {
         return twitter.getStatus();
     }
