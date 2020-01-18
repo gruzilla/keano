@@ -3,6 +3,7 @@ package space.decarbnow.collector.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import org.hibernate.annotations.*;
 import org.locationtech.jts.geom.Point;
@@ -60,12 +61,15 @@ public class MapPoi {
     private LocalDateTime createdAt;
 
     @Column(nullable = true)
+    @JsonSerialize(using=ToStringSerializer.class)
     private Long tweetId;
 
     @Column(nullable = true)
+    @JsonSerialize(using=ToStringSerializer.class)
     private Long inReplyToTweetId;
 
     @Column(nullable = true)
+    @JsonSerialize(using=ToStringSerializer.class)
     private Long nextTweetId;
 
     @Column(nullable = false, columnDefinition = "boolean not null default false")
