@@ -16,7 +16,12 @@ const DEBOUNCE_TIMEOUT = 200;
 //**************************************************************************
 let decarbnowMap = map('map', {
     zoomControl: false, // manually added
-    tap: true
+    tap: true,
+    timeDimension: true,
+    timeDimensionOptions: {
+        times: ['2019-12-01', '2020-01-01', '2020-02-01']
+    },
+    timeDimensionControl: true
 //}).setView([48.2084, 16.373], 5);
 //}).setView([, L.GeoIP.getPosition().lon], 12);
 //}).setView([L.GeoIP.getPosition().lat, L.GeoIP.getPosition().lng], 15);
@@ -31,7 +36,7 @@ let imageUrl = '/dist/no2layers/World_raster_2020_02.png',
 
 let markerInfo = {
     "pollution":  {
-        "img": "/dist/img/pollution_glow.png", 
+        "img": "/dist/img/pollution_glow.png",
         "icon_img": "/dist/img/pollution.png",
         //"fonticon": "nf nf-mdi-periodic_table_co2",
         //nf-mdi-thought_bubble, nf-fa-thumbs_down nf-mdi-flag
@@ -150,7 +155,7 @@ function centerLeafletMapOnMarker(map, marker, d_zoom) {
     var markerLatLon = marker.getLatLng();
     //var lat = markerLatLon.lat;
     //var lng = markerLatLon.lng;
-    
+
     if (map.getZoom() >= 7) {
         var targetZoom = map.getZoom();
     } else {
@@ -177,7 +182,7 @@ function initializeMarkers() {
 function createBackgroundMap() {
     return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+ 
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+
                      '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                      '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
                      '<a href="https://github.com/wri/global-power-plant-database">WRI</a>'
@@ -189,7 +194,7 @@ function createBackgroundMapSat() {
     return tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
-        attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+ 
+        attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+
                      '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA OMI</a>, '+
                      '<a href="https://github.com/wri/global-power-plant-database">WRI</a>'
     });
@@ -302,7 +307,7 @@ function refreshMarkers() {
             let bp = p.substring(p.indexOf("(")+1,p.indexOf(")")).split(" ");
             let long = parseFloat(bp[0]);
             let lat = parseFloat(bp[1]);
-            
+
             if(currentMarkerFilters.indexOf(item.type) === -1) {
                 return;
             }
@@ -366,9 +371,9 @@ function refreshMarkers() {
                             //infScroll.loadNextPage();
                         });
                     }
-                    
+
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
-                    
+
                 })
             );
         });
@@ -439,7 +444,7 @@ L.Control.Markers = L.Control.extend({
         markerControls.style.alignItems = 'center';
         markerControls.style.paddingBottom = "0px";
         markerControls.classList.add("leaflet-bar");
-        
+
 
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
@@ -464,11 +469,11 @@ L.control.markers = function(opts) {
 function setTweetMessage(variable){
         var a = document.getElementById(variable);
         a.value = "new value";
-}   
+}
 
 function replaceURLWithHTMLLinks(text){
         var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        return text.replace(exp,"<a href='$1'>$1</a>"); 
+        return text.replace(exp,"<a href='$1'>$1</a>");
 }
 
 //**************************************************************************
@@ -495,7 +500,7 @@ decarbnowMap.on('contextmenu',function(e){
         .setLatLng(e.latlng)
         .setContent(text)
         .openOn(decarbnowMap);
-    
+
     //here comes the beauty
     function onTweetSettingsChange (e) {
         let tweettype = document.getElementById("icontype");
@@ -549,6 +554,8 @@ decarbnowMap.on('click', function () {
 initializeMarkers();
 refreshMarkers();
 
+var timeOverlays = {}
+
 // add GeoJSON layers to the map once all files are loaded
 $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
     $.getJSON("/dist/no2layers/World_2011_rastered.geojson",function(no2_2011){
@@ -558,24 +565,29 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
 	            	$.getJSON("/dist/no2layers/World_2020_01.geojson",function(no2_2020_01){
 	            		$.getJSON("/dist/no2layers/World_2020_02.geojson",function(no2_2020_02){
 		            		$.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
-			                    
+
 			                    let baseLayers = {
 			                        "Satellite": createBackgroundMapSat(),
 			                        "Streets": createBackgroundMap().addTo(decarbnowMap)
 			                    };
+
+                                timeOverlays = {
+                                    '2019-12-01': L.geoJson(no2_2019_12, {style: pollutionStyle}),
+                                    '2020-01-01': L.geoJson(no2_2020_01, {style: pollutionStyle}),
+                                    '2020-02-01': L.geoJson(no2_2020_02, {style: pollutionStyle}),
+                                }
+
+
 			                    let overlays = {
 			                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),
 			                        "NO<sub>2</sub> 2011": L.geoJson(no2_2011, {style: pollutionStyle}),
 			                        "NO<sub>2</sub> 2015": L.geoJson(no2_2015, {style: pollutionStyle}),
 			                        "NO<sub>2</sub> 2019": L.geoJson(no2_2019, {style: pollutionStyle}),
-			                        "NO<sub>2</sub> 2019-12": L.geoJson(no2_2019_12, {style: pollutionStyle}),
-			                        "NO<sub>2</sub> 2020-01": L.geoJson(no2_2020_01, {style: pollutionStyle}),
-			                        "NO<sub>2</sub> 2020-02": L.geoJson(no2_2020_02, {style: pollutionStyle}).addTo(decarbnowMap),
-			                        "Disable": L.geoJson(null, {style: pollutionStyle})
-			                        
+			                        "NO<sub>2</sub> 2019-12": timeOverlays['2019-12-01'],
+			                        "NO<sub>2</sub> 2020-01": timeOverlays['2020-01-01'],
+			                        "NO<sub>2</sub> 2020-02": timeOverlays['2020-02-01'],
+			                        "Disable": L.geoJson(null, {style: pollutionStyle}).addTo(decarbnowMap)
 			                    };
-			                    
-			                    
 
 			                    let overlays_other = {
 			                        "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
@@ -587,7 +599,7 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
 			                                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
 			                            },
 			                            onEachFeature: function (feature, layer) {
-			                                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
+			                                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
 			                                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
 			                                                '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
 			                                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
@@ -598,12 +610,14 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
 			                    }
 
 			                    decarbnowMap.addLayer(markerClusters);
-			                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
-			                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
-			                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
+			                    L.control.layers(baseLayers, overlays_other, {collapsed: false}).addTo(decarbnowMap);
+			                    L.control.layers(overlays, null, {collapsed: false}).addTo(decarbnowMap);
+			                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);
+
+                                L.timeDimension.layer.GeoJsonFiles().addTo(decarbnowMap)
 
 			                    decarbnowMap.addControl(sidebar);
-			            	});        
+			            	});
 		                });
 	                });
 	            });
@@ -611,7 +625,48 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
         });
     });
 });
-  
+
+L.TimeDimension.Layer.GeoJsonFiles = L.TimeDimension.Layer.extend({
+    _onNewTimeLoading: function(ev) {
+        console.log('_onNewTimeLoading');
+        return;
+    },
+
+    _update: function() {
+        if (!this._map)
+            return;
+
+        var time = this._timeDimension.getCurrentTime();
+
+        console.log('_update: ' + time);
+
+        for (let l in timeOverlays) {
+            this._map.removeLayer(timeOverlays[l]);
+        }
+
+        this._map.addLayer(timeOverlays[time]);
+    }
+});
+
+L.timeDimension.layer.GeoJsonFiles = function(layer, options) {
+    return new L.TimeDimension.Layer.GeoJsonFiles(layer, options);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
 L.GeoIP.centerMapOnPosition(decarbnowMap, 5);
