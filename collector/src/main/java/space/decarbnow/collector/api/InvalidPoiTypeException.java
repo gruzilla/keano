@@ -1,4 +1,4 @@
 package space.decarbnow.collector.api;
 
-public class InvalidPoiTypeException extends Exception {
+public class InvalidPoiTypeException extends RuntimeException {
 }

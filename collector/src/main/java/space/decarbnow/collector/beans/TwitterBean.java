@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import space.decarbnow.collector.api.InvalidPoiTypeException;
 import space.decarbnow.collector.entities.MapPoi;
 import space.decarbnow.collector.api.TwitterStatus;
 import space.decarbnow.collector.rest.PoiRepository;
@@ -134,12 +135,18 @@ public class TwitterBean implements StatusListener, ConnectionLifeCycleListener 
         this.lastTime = LocalDateTime.now();
         this.status = "new status received";
         logger.debug("TWITTER STREAM: NEW TWEET");
-        MapPoi newPoi = Converter.mapPoiFromStatus(status);
-        linkPreviousTweet(newPoi);
-        repository.save(newPoi);
-        logger.debug("TWITTER STREAM: DONE.");
-        this.lastTime = LocalDateTime.now();
-        this.status = "new status saved " + status.getId() + " - " + status.getText();
+        try {
+            MapPoi newPoi = Converter.mapPoiFromStatus(status);
+            linkPreviousTweet(newPoi);
+            repository.save(newPoi);
+            logger.debug("TWITTER STREAM: DONE.");
+            this.lastTime = LocalDateTime.now();
+            this.status = "new status saved " + status.getId() + " - " + status.getText();
+        } catch (InvalidPoiTypeException e) {
+            logger.debug("TWITTER STREAM: ERROR, INVALID POI TYPE");
+            this.lastTime = LocalDateTime.now();
+            this.status = "ERROR: " + e.getMessage();
+        }
     }
 
     @Override

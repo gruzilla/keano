@@ -11,6 +11,7 @@ import org.locationtech.spatial4j.io.GeohashUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import space.decarbnow.collector.api.InvalidGeoHashException;
+import space.decarbnow.collector.api.InvalidPoiTypeException;
 import space.decarbnow.collector.entities.MapPoi;
 import space.decarbnow.collector.rest.PoiRepository;
 import twitter4j.HashtagEntity;
@@ -53,7 +54,7 @@ public abstract class Converter {
         return createPoint(position.getX(), position.getY());
     }
 
-    public static MapPoi mapPoiFromStatus(Status status) {
+    public static MapPoi mapPoiFromStatus(Status status) throws InvalidPoiTypeException {
         MapPoi p = new MapPoi();
         String t = status.getText();
         p.setTweetId(status.getId());
@@ -67,18 +68,21 @@ public abstract class Converter {
 
         // extract geohash from url
         for (URLEntity urlEntity : status.getURLEntities()) {
-            Pattern geoHashPattern = Pattern.compile("map\\/([^\\/]+)\\/([^\\/\\s]+)");
-            Matcher geoHashMatcher = geoHashPattern.matcher(urlEntity.getExpandedURL());
-            if (geoHashMatcher.matches()) {
+            logger.debug("checking url " + urlEntity.getExpandedURL());
+            Pattern urlPattern = Pattern.compile("map\\/([^\\/]+)\\/([^\\/\\s]+)");
+            Matcher urlMatcher = urlPattern.matcher(urlEntity.getExpandedURL());
+            if (urlMatcher.matches()) {
                 try {
-                    Point position = createPoint(geoHashMatcher.group(1));
+                    Point position = createPoint(urlMatcher.group(1));
                     logger.info("-> Position from full tweet: " + position.getX() + " " + position.getY());
                     p.setPosition(position);
                 } catch (InvalidGeoHashException ignored) {
                 }
 
-                if (validTypes.contains(geoHashMatcher.group(2).toLowerCase())) {
-                    p.setType(geoHashMatcher.group(2));
+                if (validTypes.contains(urlMatcher.group(2).toLowerCase())) {
+                    p.setType(urlMatcher.group(2));
+                } else {
+                    throw new InvalidPoiTypeException();
                 }
             }
         }
