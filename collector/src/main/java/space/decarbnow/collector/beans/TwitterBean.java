@@ -10,7 +10,8 @@ import space.decarbnow.collector.api.TwitterStatus;
 import space.decarbnow.collector.rest.PoiRepository;
 import space.decarbnow.collector.util.Converter;
 import twitter4j.*;
-import twitter4j.auth.AccessToken;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
@@ -37,14 +38,10 @@ public class TwitterBean implements StatusListener, ConnectionLifeCycleListener 
         logger.info("STARTING TWITTER BEAN....");
 
         this.repository = repository;
-        twitter = TwitterFactory.getSingleton();
-        twitter.setOAuthAccessToken(new AccessToken(
-                System.getProperty("twitter4j.oauth.accessToken"),
-                System.getProperty("twitter4j.oauth.accessTokenSecret")
-        ));
+        twitter = new TwitterFactory(getTwitterConfig()).getInstance();
 
         try {
-            twitterStream = new TwitterStreamFactory().getInstance();
+            twitterStream = new TwitterStreamFactory(getTwitterConfig()).getInstance();
         } catch (Exception e) {
             logger.error("ERROR: could not create twitter stream!");
             e.printStackTrace();
@@ -69,6 +66,20 @@ public class TwitterBean implements StatusListener, ConnectionLifeCycleListener 
             logger.error("ERROR: could not initialize listener!");
             e.printStackTrace();
         }
+    }
+
+    private Configuration getTwitterConfig() {
+        //return TwitterFactory.getSingleton();
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setDebugEnabled(true)
+                .setOAuthConsumerKey(System.getProperty("twitter4j.oauth.consumerKey"))
+                .setOAuthConsumerSecret(System.getProperty("twitter4j.oauth.consumerSecret"))
+                .setOAuthAccessToken(System.getProperty("twitter4j.oauth.accessToken"))
+                .setOAuthAccessTokenSecret(System.getProperty("twitter4j.oauth.accessTokenSecret"))
+                .setTweetModeExtended(true)
+                .set
+        ;
+        return cb.build();
     }
 
     private void runImport() throws TwitterException {

@@ -21,6 +21,7 @@ import twitter4j.URLEntity;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +66,7 @@ public abstract class Converter {
         validTypes.add("pollution");
 
         logger.info("TWEET: " + t + "\n");
+        logger.info("URL Entities:" + Arrays.toString(status.getURLEntities()));
 
         // extract geohash from url
         for (URLEntity urlEntity : status.getURLEntities()) {
