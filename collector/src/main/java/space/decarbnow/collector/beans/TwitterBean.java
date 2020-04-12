@@ -77,7 +77,6 @@ public class TwitterBean implements StatusListener, ConnectionLifeCycleListener 
                 .setOAuthAccessToken(System.getProperty("twitter4j.oauth.accessToken"))
                 .setOAuthAccessTokenSecret(System.getProperty("twitter4j.oauth.accessTokenSecret"))
                 .setTweetModeExtended(true)
-                .set
         ;
         return cb.build();
     }
