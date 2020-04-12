@@ -4,9 +4,9 @@ crypto/ganache*.AppImage
 crypto/metacoin/build
 crypto/metacoin/constants.js
 .idea
-map/dist/bundle.js
+map/map/bundle.js
 map/node_modules
-map/dist/bundle.js.map
+map/map/bundle.js.map
 env
 credentials
 credentials.py
