@@ -66,14 +66,16 @@ public abstract class Converter {
         validTypes.add("pollution");
 
         logger.info("TWEET: " + t + "\n");
-        logger.info("URL Entities:" + Arrays.toString(status.getURLEntities()));
+        logger.info("-> URL Entities:" + Arrays.toString(status.getURLEntities()));
+        Pattern urlPattern = Pattern.compile("map\\/([^\\/]+)\\/([^\\/\\s]+)");
+        logger.info("-> URL Amount:" + status.getURLEntities().length);
+        logger.info("-> pattern: " + urlPattern.toString());
 
         // extract geohash from url
         for (URLEntity urlEntity : status.getURLEntities()) {
-            logger.debug("checking url " + urlEntity.getExpandedURL());
-            Pattern urlPattern = Pattern.compile("map\\/([^\\/]+)\\/([^\\/\\s]+)");
+            logger.info("-> checking url " + urlEntity.getExpandedURL());
             Matcher urlMatcher = urlPattern.matcher(urlEntity.getExpandedURL());
-            if (urlMatcher.matches()) {
+            if (urlMatcher.find()) {
                 try {
                     Point position = createPoint(urlMatcher.group(1));
                     logger.info("-> Position from full tweet: " + position.getX() + " " + position.getY());
@@ -83,6 +85,7 @@ public abstract class Converter {
 
                 if (validTypes.contains(urlMatcher.group(2).toLowerCase())) {
                     p.setType(urlMatcher.group(2));
+                    logger.info("-> Type from full tweet: " + urlMatcher.group(2));
                 } else {
                     throw new InvalidPoiTypeException();
                 }
