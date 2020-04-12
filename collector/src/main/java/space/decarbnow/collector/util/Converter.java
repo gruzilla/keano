@@ -15,6 +15,7 @@ import space.decarbnow.collector.entities.MapPoi;
 import space.decarbnow.collector.rest.PoiRepository;
 import twitter4j.HashtagEntity;
 import twitter4j.Status;
+import twitter4j.URLEntity;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -65,18 +66,20 @@ public abstract class Converter {
         logger.info("TWEET: " + t + "\n");
 
         // extract geohash from url
-        Pattern geoHashPattern = Pattern.compile("map\\/([^\\/]+)\\/([^\\/\\s]+)");
-        Matcher geoHashMatcher = geoHashPattern.matcher(status.getText());
-        if (geoHashMatcher.matches()) {
-            try {
-                Point position = createPoint(geoHashMatcher.group(1));
-                logger.info("-> Position from full tweet: " + position.getX() + " " + position.getY());
-                p.setPosition(position);
-            } catch (InvalidGeoHashException ignored) {
-            }
+        for (URLEntity urlEntity : status.getURLEntities()) {
+            Pattern geoHashPattern = Pattern.compile("map\\/([^\\/]+)\\/([^\\/\\s]+)");
+            Matcher geoHashMatcher = geoHashPattern.matcher(urlEntity.getExpandedURL());
+            if (geoHashMatcher.matches()) {
+                try {
+                    Point position = createPoint(geoHashMatcher.group(1));
+                    logger.info("-> Position from full tweet: " + position.getX() + " " + position.getY());
+                    p.setPosition(position);
+                } catch (InvalidGeoHashException ignored) {
+                }
 
-            if (validTypes.contains(geoHashMatcher.group(2).toLowerCase())) {
-                p.setType(geoHashMatcher.group(2));
+                if (validTypes.contains(geoHashMatcher.group(2).toLowerCase())) {
+                    p.setType(geoHashMatcher.group(2));
+                }
             }
         }
 
