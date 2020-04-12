@@ -65,7 +65,7 @@ public abstract class Converter {
         logger.info("TWEET: " + t + "\n");
 
         // extract geohash from url
-        Pattern geoHashPattern = Pattern.compile("map\\/([^\\/]+)\\/");
+        Pattern geoHashPattern = Pattern.compile("map\\/([^\\/]+)\\/([^\\/\\s]+)");
         Matcher geoHashMatcher = geoHashPattern.matcher(status.getText());
         if (geoHashMatcher.matches()) {
             try {
@@ -74,8 +74,13 @@ public abstract class Converter {
                 p.setPosition(position);
             } catch (InvalidGeoHashException ignored) {
             }
+
+            if (validTypes.contains(geoHashMatcher.group(2).toLowerCase())) {
+                p.setType(geoHashMatcher.group(2));
+            }
         }
 
+        /*
         // set Type and Position by taking the first valid type and the first hashtag that converts to a geohash
         for (HashtagEntity hte : status.getHashtagEntities()) {
             String hashTagText = hte.getText();
@@ -83,6 +88,8 @@ public abstract class Converter {
                 p.setType(hashTagText);
             }
         }
+        */
+
         // set OriginalUrl by combining the users ScreenName and the tweets id using twitters url-schema
         p.setUrlOriginalTweet("https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId());
         logger.info("-> OriginalUrl: " + p.getUrlOriginalTweet());
