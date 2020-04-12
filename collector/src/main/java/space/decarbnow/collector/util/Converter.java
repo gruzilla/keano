@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Copyright (c) 2019 Matthias Steinböck - All Rights Reserved
@@ -62,23 +64,25 @@ public abstract class Converter {
 
         logger.info("TWEET: " + t + "\n");
 
+        // extract geohash from url
+        Pattern geoHashPattern = Pattern.compile("map\\/([^\\/]+)\\/");
+        Matcher geoHashMatcher = geoHashPattern.matcher(status.getText());
+        if (geoHashMatcher.matches()) {
+            try {
+                Point position = createPoint(geoHashMatcher.group(1));
+                logger.info("-> Position from full tweet: " + position.getX() + " " + position.getY());
+                p.setPosition(position);
+            } catch (InvalidGeoHashException ignored) {
+            }
+        }
+
         // set Type and Position by taking the first valid type and the first hashtag that converts to a geohash
         for (HashtagEntity hte : status.getHashtagEntities()) {
             String hashTagText = hte.getText();
             if (p.getType() == null && validTypes.contains(hashTagText)) {
                 p.setType(hashTagText);
             }
-
-            if (p.getPosition() == null) {
-                try {
-                    Point position = createPoint(hashTagText);
-                    logger.info("-> Position from " + hashTagText + ": " + position.getX() + " " + position.getY());
-                    p.setPosition(position);
-                } catch (InvalidGeoHashException ignored) {
-                }
-            }
         }
-
         // set OriginalUrl by combining the users ScreenName and the tweets id using twitters url-schema
         p.setUrlOriginalTweet("https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId());
         logger.info("-> OriginalUrl: " + p.getUrlOriginalTweet());
