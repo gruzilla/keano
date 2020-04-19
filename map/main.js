@@ -227,7 +227,7 @@ function createBackgroundMapLight() {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+
-        			 '© <a href="https://carto.com/attribution">CARTO</a>, '+
+                 '© <a href="https://carto.com/attribution">CARTO</a>, '+
                      '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                      '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
                      '<a href="https://github.com/wri/global-power-plant-database">WRI</a>'
@@ -419,14 +419,14 @@ function refreshMarkers() {
                 	if(currentMarker){
     					currentMarker.disablePermanentHighlight();
     					currentMarker = null;
-    				} 
-    				
+    				}
+
                     if(window.twttr.widgets){
                     	sidebar.show();
                     	sidebar.setContent(twemoji.parse(text));
                     	for (let idx in twitterIds) {
 	                        let twitterId = twitterIds[idx];
-	                        
+
 	                        //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
 	                        window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
 	                            //console.debug('created tweet');
@@ -434,7 +434,7 @@ function refreshMarkers() {
 	                        });
                     	}
                     }
-                    
+
                     ChangeUrl(item);
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
 
@@ -473,7 +473,7 @@ function refreshMarkers() {
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
 
                 currentMarker = urlMarker.marker;
-                
+
                 if(!decarbnowMap.hasLayer(currentMarker)){
                 	decarbnowMap.addLayer(currentMarker);
                 }
@@ -600,7 +600,7 @@ decarbnowMap.on('contextmenu',function(e){
     if(currentMarker){
     	currentMarker.disablePermanentHighlight();
     	currentMarker = null;
-    } 
+    }
 
 
     let text = '<h3>Tweet about</h3>'+
@@ -642,7 +642,7 @@ decarbnowMap.on('contextmenu',function(e){
         if(window.twttr.widgets){
         	window.twttr.widgets.load();
         }
-        
+
 
         if (typeof (history.pushState) != "undefined") {
         	var obj = { Title: hash, Url: '/map/' + hash + '/' + tweettype};
@@ -675,7 +675,7 @@ decarbnowMap.on('contextmenu',function(e){
     //console.log(e);
     if(window.twttr.widgets){
     	window.twttr.widgets.load();
-    }    
+    }
 });
 
 decarbnowMap.on('click', function () {
@@ -684,17 +684,50 @@ decarbnowMap.on('click', function () {
         decarbnowMap.removeLayer(twittermarker); // remove
     }
 
-    if (typeof (history.pushState) != "undefined") {
-        var obj = { Title: "map", Url: '/map/'};
-        history.pushState(obj, obj.Title, obj.Url);
-    } else {
-        alert("Browser does not support HTML5.");
+    historyGoToMap();
+});
+
+
+function historyGoToPosition(lat, lng) {
+    let hash = encode(lat, lng);
+    let historyItem = {
+        title: hash,
+        url: '/map/' + hash + '/' + 'pollution'
+    };
+    history.pushState(historyItem, historyItem.title, historyItem.url);
+}
+
+function historyGoToMap() {
+    let historyItem = {
+        title: hash,
+        url: '/map/'
+    };
+    history.pushState(historyItem, historyItem.title, historyItem.url);
+}
+
+function historyGoToMarker(item, marker) {
+    //console.log(item, mm);
+    let r = new RegExp("[\(\)]", "g");
+    let lng = item.position.replace(r, "").split(" ")[1]*1;
+    let lat = item.position.replace(r, "").split(" ")[2]*1;
+    let itemGeohash = encode(lng, lat);
+    let historyItem = {
+        title: itemGeohash,
+        url: '/map/' + itemGeohash + '/' + item.type,
+        marker: marker
+    };
+    history.pushState(obj, obj.Title, obj.Url);
+}
+
+window.onpopstate = function(event) {
+    if (event.state.marker) {
+
     }
 
     if(currentMarker){
     	currentMarker.disablePermanentHighlight();
     	currentMarker = null;
-    } 
+    }
 });
 
 
@@ -708,68 +741,68 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
     $.getJSON("/map/no2layers/World_2011_rastered.geojson",function(no2_2011){
         $.getJSON("/map/no2layers/World_2015_rastered.geojson",function(no2_2015){
             $.getJSON("/map/no2layers/World_2019_rastered.geojson",function(no2_2019){
-            	$.getJSON("/map/no2layers/World_2019_12.geojson",function(no2_2019_12){
-	            	$.getJSON("/map/no2layers/World_2020_01.geojson",function(no2_2020_01){
-	            		$.getJSON("/map/no2layers/World_2020_02.geojson",function(no2_2020_02){
-	            			$.getJSON("/map/no2layers/World_2020_03.geojson",function(no2_2020_03){
-			            		$.getJSON("/map/global_power_plant_database.geojson",function(coalplants) {
-				                    let baseLayers = {
-				                        "Satellite": createBackgroundMapSat(),
-				                        "Streets": createBackgroundMap(),
-				                        "Light": createBackgroundMapLight().addTo(decarbnowMap),
-				                    };
-				                    let overlays = {
-				                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),
-				                        "NO<sub>2</sub> 2011": L.geoJson(no2_2011, {style: pollutionStyle}),
-				                        "NO<sub>2</sub> 2015": L.geoJson(no2_2015, {style: pollutionStyle}),
-				                        "NO<sub>2</sub> 2019": L.geoJson(no2_2019, {style: pollutionStyle}),
-				                        "NO<sub>2</sub> 2019-12": L.geoJson(no2_2019_12, {style: pollutionStyle}),
-				                        "NO<sub>2</sub> 2020-01": L.geoJson(no2_2020_01, {style: pollutionStyle}),
-				                        "NO<sub>2</sub> 2020-02": L.geoJson(no2_2020_02, {style: pollutionStyle}),
-				                        "NO<sub>2</sub> 2020-03": L.geoJson(no2_2020_03, {style: pollutionStyle}).addTo(decarbnowMap),
-				                        "Disable": L.geoJson(null, {style: pollutionStyle})
-				                        
-				                    };
-				                    
-				                    
+            $.getJSON("/map/no2layers/World_2019_12.geojson",function(no2_2019_12){
+                $.getJSON("/map/no2layers/World_2020_01.geojson",function(no2_2020_01){
+                    $.getJSON("/map/no2layers/World_2020_02.geojson",function(no2_2020_02){
+                        $.getJSON("/map/no2layers/World_2020_03.geojson",function(no2_2020_03){
+                            $.getJSON("/map/global_power_plant_database.geojson",function(coalplants) {
+                                    let baseLayers = {
+                                        "Satellite": createBackgroundMapSat(),
+                                        "Streets": createBackgroundMap(),
+                                        "Light": createBackgroundMapLight().addTo(decarbnowMap),
+                                    };
+                                    let overlays = {
+                                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),
+                                        "NO<sub>2</sub> 2011": L.geoJson(no2_2011, {style: pollutionStyle}),
+                                        "NO<sub>2</sub> 2015": L.geoJson(no2_2015, {style: pollutionStyle}),
+                                        "NO<sub>2</sub> 2019": L.geoJson(no2_2019, {style: pollutionStyle}),
+                                        "NO<sub>2</sub> 2019-12": L.geoJson(no2_2019_12, {style: pollutionStyle}),
+                                        "NO<sub>2</sub> 2020-01": L.geoJson(no2_2020_01, {style: pollutionStyle}),
+                                        "NO<sub>2</sub> 2020-02": L.geoJson(no2_2020_02, {style: pollutionStyle}),
+                                        "NO<sub>2</sub> 2020-03": L.geoJson(no2_2020_03, {style: pollutionStyle}).addTo(decarbnowMap),
+                                        "Disable": L.geoJson(null, {style: pollutionStyle})
 
-				                    let overlays_other = {
-				                        "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
-				                            style: function(feature) {
-				                                //return {color: '#d8d4d4'};
-				                                return {color: '#FF0000'};
-				                            },
-				                            pointToLayer: function(feature, latlng) {
-				                                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
-				                            },
-				                            onEachFeature: function (feature, layer) {
-				                                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
-				                                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
-				                                                '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
-				                                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
-				                                                '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
-				                                                '</table>');
-				                            }
-				                        }).addTo(decarbnowMap)
-				                    }
+                                    };
 
-				                    initializeMarkers();
-									refreshMarkers();
-				                    decarbnowMap.addLayer(markerClusters);
-				                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
-				                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
-				                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
-				                    $("#feature_infos").stop();
-    								$("#feature_infos").fadeIn(1000);
-    								$("#feature_infos").fadeOut(6000);
-				                    decarbnowMap.addControl(sidebar);
-				                    decarbnowMap.spin(false);
-				           	 	});
-				           	});
-		                });
-	                });
-	            });
-	        });
+
+
+                                    let overlays_other = {
+                                        "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
+                                            style: function(feature) {
+                                                //return {color: '#d8d4d4'};
+                                                return {color: '#FF0000'};
+                                            },
+                                            pointToLayer: function(feature, latlng) {
+                                                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
+                                            },
+                                            onEachFeature: function (feature, layer) {
+                                                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
+                                                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
+                                                                '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
+                                                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
+                                                                '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+                                                                '</table>');
+                                            }
+                                        }).addTo(decarbnowMap)
+                                    }
+
+                                    initializeMarkers();
+                                    refreshMarkers();
+                                    decarbnowMap.addLayer(markerClusters);
+                                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
+                                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
+                                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);
+                                    $("#feature_infos").stop();
+                                $("#feature_infos").fadeIn(1000);
+                                $("#feature_infos").fadeOut(6000);
+                                    decarbnowMap.addControl(sidebar);
+                                    decarbnowMap.spin(false);
+                            });
+                        });
+                        });
+                    });
+                });
+            });
         });
     });
 });
@@ -777,8 +810,8 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
 if(window.location.pathname.split("/").length > 3) {
-	decarbnowMap.setView([15, 0], 2);
+    decarbnowMap.setView([15, 0], 2);
 } else {
-	L.GeoIP.centerMapOnPosition(decarbnowMap, 5);
+    L.GeoIP.centerMapOnPosition(decarbnowMap, 5);
 }
 window.setInterval(refreshMarkers, 30000);
