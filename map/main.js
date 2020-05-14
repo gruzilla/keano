@@ -18,10 +18,43 @@ const JUMP_TIMEOUT = 2000;
 //**************************************************************************
 // configuration and declaration
 //**************************************************************************
+let SatelliteMap = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+	attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+	maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
 
+let LightMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
+	attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+
+        			 '© <a href="https://carto.com/attribution">CARTO</a>, '+
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+	maxZoom: 20,
+	subdomains:['mt0','mt1','mt2','mt3']
+});
+
+let StreetsMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+	maxZoom: 20,
+	ext: 'png'
+});
+
+let baseLayers = {
+	"Satellite": SatelliteMap,
+	"Streets": StreetsMap,
+	"Light": LightMap
+};
 
 let decarbnowMap = map('map', {
     zoomControl: false, // manually added
+    layers: [eval(baseMapOnMapLoad())],
     tap: true
 //}).setView([48.2084, 16.373], 5);
 //}).setView([, L.GeoIP.getPosition().lon], 12);
@@ -31,7 +64,10 @@ let decarbnowMap = map('map', {
 let toggleZoom = true;
 
 let jumpedToMarker = false;
+
 let urlMarker = null;
+
+let selBaselayer = null;
 
 let currentMarker = null;
 
@@ -155,7 +191,16 @@ function locate() {
       map.locate({setView: true});
 }
 
- function ChangeUrl(item) {
+function baseMapOnMapLoad(){
+	if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
+		return(window.location.pathname.split("/")[5] + 'Map');
+		//eval("createBackgroundMap" + window.location.pathname.split("/")[5] + "()").addTo(decarbnowMap);
+	} else {
+		return("LightMap")
+	}
+}
+
+function ChangeUrl(item) {
  	jumpedToMarker = true;
  	//console.log(item, mm);
  	let r = new RegExp("[\(\)]", "g");
@@ -200,7 +245,7 @@ function initializeMarkers() {
     };
 }
 
-function createBackgroundMap() {
+function createBackgroundMapStreets() {
     return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+ 
@@ -211,7 +256,7 @@ function createBackgroundMap() {
 }
 
 
-function createBackgroundMapSat() {
+function createBackgroundMapSatellite() {
     return tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
@@ -444,12 +489,20 @@ function refreshMarkers() {
                 })
             );
 
+            let zoomLevel = 7;
+
+            if(!isNaN(Number(window.location.pathname.split("/")[4]))){
+            	zoomLevel = Number(window.location.pathname.split("/")[4]);
+            }
+
+
             if (!jumpedToMarker && urlMarker == null && checkMatch(window.location.pathname, item)) {
 //                console.debug("found url marker!", item, mm);
                 urlMarker = {
                     marker: mm,
                     text: text,
-                    twitterIds: twitterIds
+                    twitterIds: twitterIds,
+                    zoomLevel: zoomLevel,
                 };
             }
         });
@@ -470,7 +523,9 @@ function refreshMarkers() {
 	                    });
 	                }
 	            }
-                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
+
+	            console.log(urlMarker.zoomLevel)
+                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, urlMarker.zoomLevel - decarbnowMap.getZoom());
 
                 currentMarker = urlMarker.marker;
 
@@ -585,11 +640,25 @@ function replaceURLWithHTMLLinks(text){
 //**************************************************************************
 // events
 //**************************************************************************
+decarbnowMap.on('baselayerchange', function (e) {
+	//console.log(baseLayers);
+	let id = event.currentTarget.layerId;
+
+	Object.keys(baseLayers).forEach(baseLayer => {
+
+        if(id == baseLayers[baseLayer]._leaflet_id){
+			selBaselayer = baseLayer;
+    		console.log(baseLayers[baseLayer]);
+		}
+	});
+});
+
 decarbnowMap.on('contextmenu',function(e){
 
     console.debug(e);
     sidebar.hide();
     let hash = encode(e.latlng.lat, e.latlng.lng);
+    //let zoomLevel = decarbnowMap.getZoom();
 
     if (typeof (history.pushState) != "undefined") {
         var obj = { Title: hash, Url: '/map/' + hash + '/' + 'pollution'};
@@ -766,43 +835,51 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 
 
 
-                                    let overlays_other = {
-                                        "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
-                                            style: function(feature) {
-                                                //return {color: '#d8d4d4'};
-                                                return {color: '#FF0000'};
-                                            },
-                                            pointToLayer: function(feature, latlng) {
-                                                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
-                                            },
-                                            onEachFeature: function (feature, layer) {
-                                                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
-                                                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
-                                                                '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
-                                                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
-                                                                '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
-                                                                '</table>');
-                                            }
-                                        }).addTo(decarbnowMap)
-                                    }
+				                    let overlays_other = {
+				                        "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
+				                            style: function(feature) {
+				                                //return {color: '#d8d4d4'};
+				                                return {color: '#FF0000'};
+				                            },
+				                            pointToLayer: function(feature, latlng) {
+				                                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
+				                            },
+				                            onEachFeature: function (feature, layer) {
+				                                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
+				                                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
+				                                                '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
+				                                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
+				                                                '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+				                                                '</table>');
+				                            }
+				                        }).addTo(decarbnowMap)
+				                    }
+				                    /*
+						            if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
+						            	eval("createBackgroundMap" + window.location.pathname.split("/")[5] + "()").addTo(decarbnowMap);
+						            } else {
+						            	createBackgroundMapLight().addTo(decarbnowMap)
+						            }
+			            			*/
 
-                                    initializeMarkers();
-                                    refreshMarkers();
-                                    decarbnowMap.addLayer(markerClusters);
-                                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
-                                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
-                                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);
-                                    $("#feature_infos").stop();
-                                $("#feature_infos").fadeIn(1000);
-                                $("#feature_infos").fadeOut(6000);
-                                    decarbnowMap.addControl(sidebar);
-                                    decarbnowMap.spin(false);
-                            });
-                        });
-                        });
-                    });
-                });
-            });
+				                    initializeMarkers();
+									refreshMarkers();
+				                    decarbnowMap.addLayer(markerClusters);
+				                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
+				                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
+				                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);
+				                    $("#feature_infos").stop();
+    								$("#feature_infos").fadeIn(1000);
+    								$("#feature_infos").fadeOut(6000);
+				                    decarbnowMap.addControl(sidebar);
+				                    decarbnowMap.spin(false);
+				                    selBaselayer = "Light";
+				           	 	});
+				           	});
+		                });
+	                });
+	            });
+	        });
         });
     });
 });
