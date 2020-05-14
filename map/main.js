@@ -797,7 +797,7 @@ window.onpopstate = function(event) {
     	currentMarker.disablePermanentHighlight();
     	currentMarker = null;
     }
-});
+};
 
 
 //**************************************************************************
