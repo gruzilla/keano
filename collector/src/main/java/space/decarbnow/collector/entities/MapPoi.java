@@ -53,6 +53,9 @@ public class MapPoi {
     @Column(nullable = true)
     private String urlOriginalTweet;
 
+    @Column(nullable = true)
+    private String expandedUrl;
+
     @JsonIgnore
     @Column(nullable = false, columnDefinition = "boolean not null default false")
     private boolean hide = false;
